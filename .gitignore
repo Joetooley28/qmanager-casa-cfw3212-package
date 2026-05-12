@@ -1,0 +1,10 @@
+# Release assets are uploaded to GitHub Releases, not committed to git
+dist/*.tar.gz
+dist/*.sha256
+
+# Local/private scratch
+*.tmp
+*.log
+.env
+.env.*
+.ssh/
