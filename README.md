@@ -12,10 +12,10 @@ Open the Releases page and download the newest Casa asset pair:
 
 The current release is `v0.1.9-cfw3212.1`.
 
-## Install
+## Fresh Install
 
 Copy the tarball to the router as `/tmp/qmanager.tar.gz`, then run this on the
-router:
+router as root:
 
 ```sh
 cd /tmp
@@ -28,6 +28,50 @@ After install, open QManager at:
 ```text
 https://<router-lan-ip>:9000/
 ```
+
+## Update Existing Casa QManager
+
+For a normal update from an older Casa QManager package, use the same command as
+a fresh install:
+
+```sh
+cd /tmp
+rm -rf /tmp/qmanager_install
+tar xzf /tmp/qmanager.tar.gz
+sh /tmp/qmanager_install/install_cfw3212.sh
+```
+
+The installer overwrites QManager web files, CGI scripts, daemons, service
+units, and Casa-safe runtime patches. It preserves existing `/etc/qmanager`
+configuration files when possible, including login/config data and TLS certs.
+
+If the previous install is badly broken or from an early experimental build,
+run the uninstall command first, then install again.
+
+## Uninstall
+
+The uninstall script is inside the release tarball. Extract the same package and
+run:
+
+```sh
+cd /tmp
+rm -rf /tmp/qmanager_install
+tar xzf /tmp/qmanager.tar.gz
+sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot
+```
+
+Default uninstall removes QManager services, `/usrdata/qmanager`, and
+QManager-installed binaries under `/usrdata/bin`. It preserves `/etc/qmanager`
+and `/usrdata/opt` so config and Entware payloads are not destroyed casually.
+
+For a deeper cleanup, add `--purge`:
+
+```sh
+sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot --purge
+```
+
+`--purge` removes `/etc/qmanager` and `/usrdata/opt` too. Use it only when you
+really want to discard QManager config and bundled Entware state.
 
 ## Verify Checksum
 
