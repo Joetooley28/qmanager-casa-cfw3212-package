@@ -85,7 +85,7 @@ sha256sum -c qmanager-cfw3212-v0.1.9.sha256
 Expected SHA-256 for `v0.1.9-cfw3212.1`:
 
 ```text
-f54daaf5d84f855f343f84b2932e3f89ecd248b0302dc0ec170414b8787bd7da
+a220946e7c0b67a2f0987343235a6045c28393b0f3d794aa3f73a10f657b9a74
 ```
 
 ## Versioning
