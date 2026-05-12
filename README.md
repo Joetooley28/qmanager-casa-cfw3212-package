@@ -44,6 +44,14 @@ tar xzf /tmp/qmanager.tar.gz
 sh /tmp/qmanager_install/install_cfw3212.sh
 ```
 
+From Windows PowerShell, some Casa SSH stacks need legacy SCP mode. Use
+`scp -O`, then run the install as a single SSH command:
+
+```powershell
+scp -O .\qmanager-cfw3212-v0.1.9.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/install_cfw3212.sh"
+```
+
 After install, open QManager at:
 
 ```text
@@ -85,6 +93,13 @@ cd /tmp
 rm -rf /tmp/qmanager_install
 tar xzf /tmp/qmanager.tar.gz
 sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot
+```
+
+Windows PowerShell one-shot after transfer:
+
+```powershell
+scp -O .\qmanager-cfw3212-v0.1.9.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot"
 ```
 
 Default uninstall removes QManager services, `/usrdata/qmanager`, and
