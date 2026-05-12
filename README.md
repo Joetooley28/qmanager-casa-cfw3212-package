@@ -3,7 +3,29 @@
 Ready-to-install Casa CFW-3212 builds of QManager are published on this repo's
 GitHub Releases page.
 
-## Download
+## One-Line Online Install
+
+SSH into the rooted Casa CFW-3212 as root, then run one of these commands on the
+router.
+
+With `curl`:
+
+```sh
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.9-cfw3212.1/install-qmanager-cfw3212.sh | sh
+```
+
+With `wget`:
+
+```sh
+wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.9-cfw3212.1/install-qmanager-cfw3212.sh | sh
+```
+
+This downloads the package, verifies the checksum, extracts it, and runs the
+Casa installer.
+
+## Offline / No-Router-Internet Install
+
+Use this path when the router does not have working internet yet.
 
 Open the Releases page and download the newest Casa asset pair:
 
@@ -12,13 +34,12 @@ Open the Releases page and download the newest Casa asset pair:
 
 The current release is `v0.1.9-cfw3212.1`.
 
-## Fresh Install
-
-Copy the tarball to the router as `/tmp/qmanager.tar.gz`, then run this on the
-router as root:
+Copy the tarball to the router as `/tmp/qmanager.tar.gz`, SSH into the router
+as root, then run:
 
 ```sh
 cd /tmp
+rm -rf /tmp/qmanager_install
 tar xzf /tmp/qmanager.tar.gz
 sh /tmp/qmanager_install/install_cfw3212.sh
 ```
@@ -31,27 +52,33 @@ https://<router-lan-ip>:9000/
 
 ## Update Existing Casa QManager
 
-For a normal update from an older Casa QManager package, use the same command as
-a fresh install:
+For a normal update from an older Casa QManager package, use the same install
+command. The installer overwrites QManager web files, CGI scripts, daemons,
+service units, and Casa-safe runtime patches. It preserves existing
+`/etc/qmanager` configuration files when possible, including login/config data
+and TLS certs.
+
+Online:
 
 ```sh
-cd /tmp
-rm -rf /tmp/qmanager_install
-tar xzf /tmp/qmanager.tar.gz
-sh /tmp/qmanager_install/install_cfw3212.sh
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.9-cfw3212.1/install-qmanager-cfw3212.sh | sh
 ```
 
-The installer overwrites QManager web files, CGI scripts, daemons, service
-units, and Casa-safe runtime patches. It preserves existing `/etc/qmanager`
-configuration files when possible, including login/config data and TLS certs.
+Offline: copy the tarball to `/tmp/qmanager.tar.gz`, then run the offline
+install commands above.
 
 If the previous install is badly broken or from an early experimental build,
 run the uninstall command first, then install again.
 
 ## Uninstall
 
-The uninstall script is inside the release tarball. Extract the same package and
-run:
+Online uninstall:
+
+```sh
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.9-cfw3212.1/uninstall-qmanager-cfw3212.sh | sh
+```
+
+Offline uninstall: copy the same tarball to `/tmp/qmanager.tar.gz`, then run:
 
 ```sh
 cd /tmp
@@ -68,6 +95,12 @@ For a deeper cleanup, add `--purge`:
 
 ```sh
 sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot --purge
+```
+
+Online purge:
+
+```sh
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.9-cfw3212.1/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
 ```
 
 `--purge` removes `/etc/qmanager` and `/usrdata/opt` too. Use it only when you
