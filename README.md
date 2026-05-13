@@ -12,7 +12,7 @@ Use one of these two methods. Most Windows users should use PowerShell.
 SSH into the router from Windows PowerShell:
 
 ```powershell
-ssh root@192.168.10.1
+ssh root@192.168.1.1
 ```
 
 Then run this on the router:
@@ -41,8 +41,8 @@ Then run these two commands from Windows PowerShell in the folder where you
 downloaded it:
 
 ```powershell
-scp -O .\qmanager-cfw3212-v0.1.9.tar.gz root@192.168.10.1:/tmp/qmanager.tar.gz
-ssh root@192.168.10.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/install_cfw3212.sh"
+scp -O .\qmanager-cfw3212-v0.1.9.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/install_cfw3212.sh"
 ```
 
 The `-O` flag uses legacy SCP mode, which is needed by some Casa SSH setups.
@@ -64,7 +64,7 @@ configuration files when possible, including login/config data and TLS certs.
 SSH into the router from Windows PowerShell:
 
 ```powershell
-ssh root@192.168.10.1
+ssh root@192.168.1.1
 ```
 
 Then run this on the router:
@@ -79,8 +79,8 @@ If the router has no internet, use the same downloaded tarball and run these
 two commands from Windows PowerShell:
 
 ```powershell
-scp -O .\qmanager-cfw3212-v0.1.9.tar.gz root@192.168.10.1:/tmp/qmanager.tar.gz
-ssh root@192.168.10.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot"
+scp -O .\qmanager-cfw3212-v0.1.9.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot"
 ```
 
 Default uninstall removes QManager services, `/usrdata/qmanager`, and
@@ -90,7 +90,7 @@ and `/usrdata/opt` so config and Entware payloads are not destroyed casually.
 For a deeper cleanup, add `--purge` to the uninstall command:
 
 ```powershell
-ssh root@192.168.10.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot --purge"
+ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot --purge"
 ```
 
 For online purge, SSH into the router and run:
