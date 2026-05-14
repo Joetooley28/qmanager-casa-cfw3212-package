@@ -65,11 +65,29 @@ jobs:
         with:
           path: package
 
+      - name: Check converter repo access
+        shell: bash
+        env:
+          CONVERTER_REPO_TOKEN: ${{ secrets.CONVERTER_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CONVERTER_REPO_TOKEN:-}" ]; then
+            cat >&2 <<'EOF'
+          Missing required secret: CONVERTER_REPO_TOKEN
+
+          The Casa converter repo is private, so the package repo GITHUB_TOKEN
+          cannot read it. Add a fine-grained token with read-only Contents
+          access to Joetooley28/qmanager-casa-conversion-cfw3212-gui-ota.
+          EOF
+            exit 1
+          fi
+
       - name: Check out Casa converter
         uses: actions/checkout@v4
         with:
           repository: ${{ env.CONVERTER_REPO }}
           path: converter
+          token: ${{ secrets.CONVERTER_REPO_TOKEN }}
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
