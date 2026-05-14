@@ -94,12 +94,22 @@ explicitly opts into prerelease checks.
 
 ## Permissions
 
-The workflow uses the built-in `GITHUB_TOKEN` with `contents: write`.
+The workflow uses the built-in `GITHUB_TOKEN` with `contents: write` to create
+package repo releases.
 
 Repository settings must allow GitHub Actions to create releases with the
-workflow token. No extra secret is required for public upstream release checks or
-for checking out the public converter repo:
+workflow token.
+
+Because the converter repo is private, add this package repo secret:
+
+```text
+CONVERTER_REPO_TOKEN
+```
+
+Use a fine-grained token with read-only `Contents` access to:
 
 ```text
 Joetooley28/qmanager-casa-conversion-cfw3212-gui-ota
 ```
+
+No extra secret is required for public upstream release checks.
