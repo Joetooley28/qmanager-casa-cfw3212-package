@@ -265,8 +265,10 @@ jobs:
           awk -v name="$tar_name" '{print $1 "  " name}' "$build_dir/sha256sum.txt" > "$stage_dir/$sha_name"
 
           (cd "$stage_dir" && sha256sum -c "$sha_name")
-          tar tzf "$stage_dir/$tar_name" | grep -q '^qmanager_install/install_cfw3212.sh$'
-          tar tzf "$stage_dir/$tar_name" | grep -q '^qmanager_install/uninstall_cfw3212.sh$'
+          tar tzf "$stage_dir/$tar_name" > "$stage_dir/tar-list.txt"
+          grep -q '^qmanager_install/install_cfw3212.sh$' "$stage_dir/tar-list.txt"
+          grep -q '^qmanager_install/uninstall_cfw3212.sh$' "$stage_dir/tar-list.txt"
+          rm -f "$stage_dir/tar-list.txt"
 
           {
             echo "stage_dir=$stage_dir"
