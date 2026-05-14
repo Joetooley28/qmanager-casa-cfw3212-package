@@ -217,6 +217,8 @@ jobs:
         run: |
           set -euo pipefail
 
+          upstream_tag="${{ steps.resolve.outputs.upstream_tag }}"
+          casa_build="${{ steps.resolve.outputs.casa_build }}"
           ref_dir="$RUNNER_TEMP/casa-reference"
           mkdir -p "$ref_dir"
           cp converter/qmanager/casa_conversion/templates/install_cfw3212.sh "$ref_dir/install_cfw3212.sh"
@@ -224,11 +226,23 @@ jobs:
           cd converter
           UPSTREAM_REPO="https://github.com/${UPSTREAM_REPO}.git" \
           UPSTREAM_API="https://api.github.com/repos/${UPSTREAM_REPO}/releases" \
-          CASA_BUILD="${{ steps.resolve.outputs.casa_build }}" \
+          CASA_BUILD="$casa_build" \
             bash qmanager/casa_conversion/build-casa-port.sh \
-              --version "${{ steps.resolve.outputs.upstream_tag }}" \
+              --version "$upstream_tag" \
               --ref-dir "$ref_dir" \
-              --force
+              --force \
+              --skip-build
+
+          target_dir="qmanager/qmanager_work_${upstream_tag}_casa"
+          if [ -f "$target_dir/build-discord-bot.sh" ]; then
+            chmod +x "$target_dir/build-discord-bot.sh"
+          fi
+
+          cd "$target_dir"
+          bun install
+          CASA_BUILD="$casa_build" bun run package
+          test -f qmanager-build/qmanager.tar.gz
+          test -f qmanager-build/sha256sum.txt
 
       - name: Stage release assets
         id: stage
