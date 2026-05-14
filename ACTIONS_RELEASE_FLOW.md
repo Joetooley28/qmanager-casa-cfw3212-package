@@ -44,8 +44,8 @@ create_release=false
 Those defaults build and upload a workflow artifact only. They do not create or
 modify GitHub Releases.
 
-The scheduled run also uses safe dry-run behavior. It can detect and build a new
-upstream app release, but it will not publish assets.
+The scheduled run checks every 6 hours and also uses safe dry-run behavior. It
+can detect and build a new upstream app release, but it will not publish assets.
 
 ## Dry Run
 
