@@ -1,0 +1,322 @@
+name: Build Casa CFW-3212 prerelease
+
+on:
+  workflow_dispatch:
+    inputs:
+      upstream_version:
+        description: Upstream RM520N version to convert, or latest
+        required: true
+        default: latest
+      casa_build:
+        description: Casa build suffix number
+        required: true
+        default: "1"
+      prerelease:
+        description: Create the GitHub Release as a prerelease
+        required: true
+        type: boolean
+        default: true
+      dry_run:
+        description: Build and stage assets without publishing
+        required: true
+        type: boolean
+        default: true
+      force:
+        description: Allow replacing assets on an existing release
+        required: true
+        type: boolean
+        default: false
+      create_release:
+        description: Publish the staged assets to GitHub Releases
+        required: true
+        type: boolean
+        default: false
+  schedule:
+    - cron: "17 10 * * 2"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: casa-cfw3212-release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_REPO: dr-dolomite/QManager-RM520N
+  PACKAGE_REPO: Joetooley28/qmanager-casa-cfw3212-package
+  CONVERTER_REPO: Joetooley28/qmanager-casa-conversion-cfw3212-gui-ota
+
+jobs:
+  build:
+    name: Build converted Casa package
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      INPUT_UPSTREAM_VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.upstream_version || 'latest' }}
+      INPUT_CASA_BUILD: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.casa_build || '1' }}
+      INPUT_PRERELEASE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.prerelease || 'true' }}
+      INPUT_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'true' }}
+      INPUT_FORCE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.force || 'false' }}
+      INPUT_CREATE_RELEASE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.create_release || 'false' }}
+
+    steps:
+      - name: Check out package repo
+        uses: actions/checkout@v4
+        with:
+          path: package
+
+      - name: Check out Casa converter
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.CONVERTER_REPO }}
+          path: converter
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Resolve upstream app release
+        id: resolve
+        working-directory: package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          requested="${INPUT_UPSTREAM_VERSION:-latest}"
+          casa_build="${INPUT_CASA_BUILD:-1}"
+
+          case "$casa_build" in
+            ''|*[!0-9]*) echo "casa_build must be a positive integer" >&2; exit 1 ;;
+          esac
+
+          gh api "repos/${UPSTREAM_REPO}/releases?per_page=100" > "$RUNNER_TEMP/upstream-releases.json"
+
+          python3 - "$RUNNER_TEMP/upstream-releases.json" "$requested" <<'PY' > "$RUNNER_TEMP/resolve.env"
+          import json
+          import re
+          import sys
+          from pathlib import Path
+
+          releases = json.loads(Path(sys.argv[1]).read_text())
+          requested = sys.argv[2]
+
+          def real_app_release(rel):
+              tag = rel.get("tag_name") or ""
+              if not re.fullmatch(r"v\d+\.\d+\.\d+", tag):
+                  return False
+              assets = {asset.get("name") for asset in rel.get("assets", [])}
+              return {"qmanager.tar.gz", "sha256sum.txt"}.issubset(assets)
+
+          if requested == "latest":
+              for rel in releases:
+                  if real_app_release(rel):
+                      print(f"upstream_tag={rel['tag_name']}")
+                      break
+              else:
+                  raise SystemExit("No upstream RM520N app release contains qmanager.tar.gz and sha256sum.txt")
+          else:
+              tag = requested if requested.startswith("v") else f"v{requested}"
+              for rel in releases:
+                  if (rel.get("tag_name") or "") == tag:
+                      if not real_app_release(rel):
+                          raise SystemExit(f"{tag} is not an app release with qmanager.tar.gz and sha256sum.txt")
+                      print(f"upstream_tag={tag}")
+                      break
+              else:
+                  raise SystemExit(f"Upstream release not found: {tag}")
+          PY
+
+          . "$RUNNER_TEMP/resolve.env"
+          casa_tag="${upstream_tag}-cfw3212.${casa_build}"
+          tar_name="qmanager-cfw3212-${upstream_tag}.tar.gz"
+          sha_name="qmanager-cfw3212-${upstream_tag}.sha256"
+
+          {
+            echo "upstream_tag=$upstream_tag"
+            echo "casa_build=$casa_build"
+            echo "casa_tag=$casa_tag"
+            echo "tar_name=$tar_name"
+            echo "sha_name=$sha_name"
+          } >> "$GITHUB_OUTPUT"
+
+          printf 'Selected upstream app release: %s\n' "$upstream_tag"
+          printf 'Casa release tag: %s\n' "$casa_tag"
+
+      - name: Check release safety gates
+        id: safety
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          dry_run="${INPUT_DRY_RUN:-true}"
+          create_release="${INPUT_CREATE_RELEASE:-false}"
+          prerelease="${INPUT_PRERELEASE:-true}"
+          force="${INPUT_FORCE:-false}"
+          casa_tag="${{ steps.resolve.outputs.casa_tag }}"
+
+          if [ "$prerelease" != "true" ]; then
+            echo "This workflow refuses to publish stable releases automatically." >&2
+            echo "Set prerelease=true and promote manually after live testing." >&2
+            exit 1
+          fi
+
+          release_exists=false
+          existing_prerelease=""
+          if gh release view "$casa_tag" --repo "$PACKAGE_REPO" >/dev/null 2>&1; then
+            release_exists=true
+            existing_prerelease="$(gh release view "$casa_tag" --repo "$PACKAGE_REPO" --json isPrerelease --jq '.isPrerelease')"
+            if [ "$existing_prerelease" != "true" ]; then
+              echo "Release $casa_tag already exists but is not a prerelease." >&2
+              echo "Refusing to modify stable releases from automation." >&2
+              exit 1
+            fi
+          fi
+
+          if [ "$create_release" = "true" ] && [ "$dry_run" != "true" ] && [ "$release_exists" = "true" ] && [ "$force" != "true" ]; then
+            echo "Release $casa_tag already exists in $PACKAGE_REPO." >&2
+            echo "Refusing to overwrite release assets without force=true." >&2
+            exit 1
+          fi
+
+          {
+            echo "dry_run=$dry_run"
+            echo "create_release=$create_release"
+            echo "prerelease=$prerelease"
+            echo "force=$force"
+            echo "release_exists=$release_exists"
+            echo "existing_prerelease=$existing_prerelease"
+          } >> "$GITHUB_OUTPUT"
+
+          printf 'dry_run=%s create_release=%s prerelease=%s force=%s release_exists=%s existing_prerelease=%s\n' \
+            "$dry_run" "$create_release" "$prerelease" "$force" "$release_exists" "$existing_prerelease"
+
+      - name: Build Casa package off-device
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ref_dir="$RUNNER_TEMP/casa-reference"
+          mkdir -p "$ref_dir"
+          cp converter/qmanager/casa_conversion/templates/install_cfw3212.sh "$ref_dir/install_cfw3212.sh"
+
+          cd converter
+          CASA_BUILD="${{ steps.resolve.outputs.casa_build }}" \
+            bash qmanager/casa_conversion/build-casa-port.sh \
+              --version "${{ steps.resolve.outputs.upstream_tag }}" \
+              --ref-dir "$ref_dir" \
+              --force
+
+      - name: Stage release assets
+        id: stage
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          upstream_tag="${{ steps.resolve.outputs.upstream_tag }}"
+          tar_name="${{ steps.resolve.outputs.tar_name }}"
+          sha_name="${{ steps.resolve.outputs.sha_name }}"
+          build_dir="converter/qmanager/qmanager_work_${upstream_tag}_casa/qmanager-build"
+          stage_dir="$RUNNER_TEMP/casa-release-assets"
+
+          test -f "$build_dir/qmanager.tar.gz"
+          test -f "$build_dir/sha256sum.txt"
+
+          rm -rf "$stage_dir"
+          mkdir -p "$stage_dir"
+          cp "$build_dir/qmanager.tar.gz" "$stage_dir/$tar_name"
+          awk -v name="$tar_name" '{print $1 "  " name}' "$build_dir/sha256sum.txt" > "$stage_dir/$sha_name"
+
+          (cd "$stage_dir" && sha256sum -c "$sha_name")
+          tar tzf "$stage_dir/$tar_name" | grep -q '^qmanager_install/install_cfw3212.sh$'
+          tar tzf "$stage_dir/$tar_name" | grep -q '^qmanager_install/uninstall_cfw3212.sh$'
+
+          {
+            echo "stage_dir=$stage_dir"
+            echo "tar_path=$stage_dir/$tar_name"
+            echo "sha_path=$stage_dir/$sha_name"
+            echo "sha256=$(awk '{print $1}' "$stage_dir/$sha_name")"
+          } >> "$GITHUB_OUTPUT"
+
+          ls -lh "$stage_dir"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: casa-cfw3212-${{ steps.resolve.outputs.casa_tag }}
+          path: |
+            ${{ steps.stage.outputs.tar_path }}
+            ${{ steps.stage.outputs.sha_path }}
+          if-no-files-found: error
+
+      - name: Write release notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/release-notes.md" <<EOF
+          Casa CFW-3212 conversion of dr-dolomite/QManager-RM520N ${{ steps.resolve.outputs.upstream_tag }}.
+
+          This is a prerelease for live-router validation before any manual stable promotion.
+
+          Safety scope:
+          - Casa install paths under /usrdata and /etc/systemd/system
+          - HTTP 9080 and HTTPS 9000
+          - /dev/smd11 with bundled atcli_smd11
+          - no upstream OTA auto-updater
+          - no QCFG usbnet / ECM / MBIM / RNDIS exposure
+          - no blind SIM profile auto-apply
+          - no upstream IPPT QMAP modem writes
+
+          SHA-256:
+          ${{ steps.stage.outputs.sha256 }}
+          EOF
+
+      - name: Create or update prerelease
+        if: steps.safety.outputs.create_release == 'true' && steps.safety.outputs.dry_run != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          casa_tag="${{ steps.resolve.outputs.casa_tag }}"
+          tar_path="${{ steps.stage.outputs.tar_path }}"
+          sha_path="${{ steps.stage.outputs.sha_path }}"
+          force="${{ steps.safety.outputs.force }}"
+          release_exists="${{ steps.safety.outputs.release_exists }}"
+
+          if [ "$release_exists" = "true" ]; then
+            if [ "$force" != "true" ]; then
+              echo "Release exists and force=false; refusing to upload assets." >&2
+              exit 1
+            fi
+            gh release upload "$casa_tag" "$tar_path" "$sha_path" \
+              --repo "$PACKAGE_REPO" \
+              --clobber
+          else
+            gh release create "$casa_tag" "$tar_path" "$sha_path" \
+              --repo "$PACKAGE_REPO" \
+              --title "QManager ${casa_tag} for Casa CFW-3212" \
+              --notes-file "$RUNNER_TEMP/release-notes.md" \
+              --prerelease \
+              --latest=false
+          fi
+
+      - name: Dry-run summary
+        if: steps.safety.outputs.create_release != 'true' || steps.safety.outputs.dry_run == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat <<EOF
+          Dry run complete. No GitHub Release was created or modified.
+
+          Package repo: ${PACKAGE_REPO}
+          Upstream repo: ${UPSTREAM_REPO}
+          Upstream tag: ${{ steps.resolve.outputs.upstream_tag }}
+          Casa tag: ${{ steps.resolve.outputs.casa_tag }}
+          Assets:
+            ${{ steps.resolve.outputs.tar_name }}
+            ${{ steps.resolve.outputs.sha_name }}
+          SHA-256: ${{ steps.stage.outputs.sha256 }}
+          EOF
