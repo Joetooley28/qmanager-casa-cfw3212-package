@@ -222,6 +222,8 @@ jobs:
           cp converter/qmanager/casa_conversion/templates/install_cfw3212.sh "$ref_dir/install_cfw3212.sh"
 
           cd converter
+          UPSTREAM_REPO="https://github.com/${UPSTREAM_REPO}.git" \
+          UPSTREAM_API="https://api.github.com/repos/${UPSTREAM_REPO}/releases" \
           CASA_BUILD="${{ steps.resolve.outputs.casa_build }}" \
             bash qmanager/casa_conversion/build-casa-port.sh \
               --version "${{ steps.resolve.outputs.upstream_tag }}" \
