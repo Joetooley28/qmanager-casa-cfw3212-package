@@ -22,7 +22,7 @@ on:
         type: boolean
         default: true
       force:
-        description: Allow replacing assets on an existing release
+        description: "If the release tag already exists, overwrite its assets. Use when re-building the same version after a mistake. Leave unchecked for new releases."
         required: true
         type: boolean
         default: false
