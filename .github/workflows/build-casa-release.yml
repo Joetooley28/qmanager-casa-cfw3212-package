@@ -295,6 +295,8 @@ jobs:
           cat > "$RUNNER_TEMP/release-notes.md" <<'NOTES_EOF'
           Casa CFW-3212 conversion of dr-dolomite/QManager-RM520N UPSTREAM_TAG_PLACEHOLDER.
 
+          Upstream release notes: https://github.com/dr-dolomite/QManager-RM520N/releases/tag/UPSTREAM_TAG_PLACEHOLDER
+
           This is a prerelease for live-router validation before any manual stable promotion.
 
           Safety scope:
