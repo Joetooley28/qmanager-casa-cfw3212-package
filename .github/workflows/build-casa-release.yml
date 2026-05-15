@@ -292,8 +292,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat > "$RUNNER_TEMP/release-notes.md" <<EOF
-          Casa CFW-3212 conversion of dr-dolomite/QManager-RM520N ${{ steps.resolve.outputs.upstream_tag }}.
+          cat > "$RUNNER_TEMP/release-notes.md" <<'NOTES_EOF'
+          Casa CFW-3212 conversion of dr-dolomite/QManager-RM520N UPSTREAM_TAG_PLACEHOLDER.
 
           This is a prerelease for live-router validation before any manual stable promotion.
 
@@ -307,8 +307,57 @@ jobs:
           - no upstream IPPT QMAP modem writes
 
           SHA-256:
-          ${{ steps.stage.outputs.sha256 }}
-          EOF
+          SHA256_PLACEHOLDER
+
+          ## Install Or Update
+
+          Use one of these two methods. Most Windows users should use PowerShell.
+
+          ### Method 1: Router Has Internet
+
+          SSH into the router from Windows PowerShell:
+
+              ssh root@192.168.1.1
+
+          Then run this on the router:
+
+              curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/CASA_TAG_PLACEHOLDER/install-qmanager-cfw3212.sh | sh
+
+          If curl fails, use wget instead:
+
+              wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/CASA_TAG_PLACEHOLDER/install-qmanager-cfw3212.sh | sh
+
+          ### Method 2: Router Has No Internet
+
+          Download `TAR_NAME_PLACEHOLDER` on Windows. Do not extract it on Windows. If Windows already opened/extracted it into a folder, go back to the folder that contains the original `.tar.gz` file.
+
+          Then run these two commands from Windows PowerShell in that folder:
+
+              scp -O .\TAR_NAME_PLACEHOLDER root@192.168.1.1:/tmp/qmanager.tar.gz
+              ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/install_cfw3212.sh"
+
+          Linux/WSL users can use the same two-step flow:
+
+              scp -O TAR_NAME_PLACEHOLDER root@192.168.1.1:/tmp/qmanager.tar.gz
+              ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/install_cfw3212.sh"
+          NOTES_EOF
+          sed -i \
+            -e "s|UPSTREAM_TAG_PLACEHOLDER|${{ steps.resolve.outputs.upstream_tag }}|g" \
+            -e "s|SHA256_PLACEHOLDER|${{ steps.stage.outputs.sha256 }}|g" \
+            -e "s|CASA_TAG_PLACEHOLDER|${{ steps.resolve.outputs.casa_tag }}|g" \
+            -e "s|TAR_NAME_PLACEHOLDER|${{ steps.resolve.outputs.tar_name }}|g" \
+            "$RUNNER_TEMP/release-notes.md"
+
+      - name: Write install script
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed \
+            -e "s|@@CASA_TAG@@|${{ steps.resolve.outputs.casa_tag }}|g" \
+            -e "s|@@UPSTREAM_TAG@@|${{ steps.resolve.outputs.upstream_tag }}|g" \
+            converter/qmanager/casa_conversion/templates/install-qmanager-cfw3212.sh.tmpl \
+            > "$RUNNER_TEMP/install-qmanager-cfw3212.sh"
+          chmod +x "$RUNNER_TEMP/install-qmanager-cfw3212.sh"
 
       - name: Create or update prerelease
         if: steps.safety.outputs.create_release == 'true' && steps.safety.outputs.dry_run != 'true'
@@ -319,6 +368,7 @@ jobs:
           casa_tag="${{ steps.resolve.outputs.casa_tag }}"
           tar_path="${{ steps.stage.outputs.tar_path }}"
           sha_path="${{ steps.stage.outputs.sha_path }}"
+          install_script="$RUNNER_TEMP/install-qmanager-cfw3212.sh"
           force="${{ steps.safety.outputs.force }}"
           release_exists="${{ steps.safety.outputs.release_exists }}"
 
@@ -327,11 +377,11 @@ jobs:
               echo "Release exists and force=false; refusing to upload assets." >&2
               exit 1
             fi
-            gh release upload "$casa_tag" "$tar_path" "$sha_path" \
+            gh release upload "$casa_tag" "$tar_path" "$sha_path" "$install_script" \
               --repo "$PACKAGE_REPO" \
               --clobber
           else
-            gh release create "$casa_tag" "$tar_path" "$sha_path" \
+            gh release create "$casa_tag" "$tar_path" "$sha_path" "$install_script" \
               --repo "$PACKAGE_REPO" \
               --title "QManager ${casa_tag} for Casa CFW-3212" \
               --notes-file "$RUNNER_TEMP/release-notes.md" \
