@@ -18,13 +18,13 @@ ssh root@192.168.1.1
 Then run this on the router:
 
 ```sh
-curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.4/install-qmanager-cfw3212.sh | sh
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.6/install-qmanager-cfw3212.sh | sh
 ```
 
 If `curl` fails, use `wget` instead:
 
 ```sh
-wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.4/install-qmanager-cfw3212.sh | sh
+wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.6/install-qmanager-cfw3212.sh | sh
 ```
 
 This downloads the package, verifies the checksum, extracts it, and runs the
@@ -79,7 +79,7 @@ ssh root@192.168.1.1
 Then run this on the router:
 
 ```sh
-curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.4/uninstall-qmanager-cfw3212.sh | sh
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.6/uninstall-qmanager-cfw3212.sh | sh
 ```
 
 ### Offline Uninstall
@@ -112,7 +112,7 @@ ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.
 For online purge, SSH into the router and run:
 
 ```sh
-curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.4/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.6/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
 ```
 
 `--purge` removes `/etc/qmanager` and `/usrdata/opt` too. Use it only when you
@@ -127,10 +127,10 @@ installs, you can verify the downloaded tarball in PowerShell:
 Get-FileHash .\qmanager-cfw3212-v0.1.10.tar.gz -Algorithm SHA256
 ```
 
-Expected SHA-256 for `v0.1.10-cfw3212.4`:
+Expected SHA-256 for `v0.1.10-cfw3212.6`:
 
 ```text
-28c93e5796893faaaea8afabb94054040955f7d872face4bf67f41e43ad55443
+7a10c3b444e3e9e3516fe804b38af0c5a49e87dee61517793e4ba481bb824e74
 ```
 
 ## Versioning
