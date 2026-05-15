@@ -348,16 +348,21 @@ jobs:
             -e "s|TAR_NAME_PLACEHOLDER|${{ steps.resolve.outputs.tar_name }}|g" \
             "$RUNNER_TEMP/release-notes.md"
 
-      - name: Write install script
+      - name: Write install scripts
         shell: bash
         run: |
           set -euo pipefail
-          sed \
-            -e "s|@@CASA_TAG@@|${{ steps.resolve.outputs.casa_tag }}|g" \
-            -e "s|@@UPSTREAM_TAG@@|${{ steps.resolve.outputs.upstream_tag }}|g" \
-            converter/qmanager/casa_conversion/templates/install-qmanager-cfw3212.sh.tmpl \
-            > "$RUNNER_TEMP/install-qmanager-cfw3212.sh"
-          chmod +x "$RUNNER_TEMP/install-qmanager-cfw3212.sh"
+          subst() {
+            sed \
+              -e "s|@@CASA_TAG@@|${{ steps.resolve.outputs.casa_tag }}|g" \
+              -e "s|@@UPSTREAM_TAG@@|${{ steps.resolve.outputs.upstream_tag }}|g" \
+              "$1" > "$2"
+            chmod +x "$2"
+          }
+          subst converter/qmanager/casa_conversion/templates/install-qmanager-cfw3212.sh.tmpl \
+                 "$RUNNER_TEMP/install-qmanager-cfw3212.sh"
+          subst converter/qmanager/casa_conversion/templates/uninstall-qmanager-cfw3212.sh.tmpl \
+                 "$RUNNER_TEMP/uninstall-qmanager-cfw3212.sh"
 
       - name: Create or update prerelease
         if: steps.safety.outputs.create_release == 'true' && steps.safety.outputs.dry_run != 'true'
@@ -369,6 +374,7 @@ jobs:
           tar_path="${{ steps.stage.outputs.tar_path }}"
           sha_path="${{ steps.stage.outputs.sha_path }}"
           install_script="$RUNNER_TEMP/install-qmanager-cfw3212.sh"
+          uninstall_script="$RUNNER_TEMP/uninstall-qmanager-cfw3212.sh"
           force="${{ steps.safety.outputs.force }}"
           release_exists="${{ steps.safety.outputs.release_exists }}"
 
@@ -377,11 +383,11 @@ jobs:
               echo "Release exists and force=false; refusing to upload assets." >&2
               exit 1
             fi
-            gh release upload "$casa_tag" "$tar_path" "$sha_path" "$install_script" \
+            gh release upload "$casa_tag" "$tar_path" "$sha_path" "$install_script" "$uninstall_script" \
               --repo "$PACKAGE_REPO" \
               --clobber
           else
-            gh release create "$casa_tag" "$tar_path" "$sha_path" "$install_script" \
+            gh release create "$casa_tag" "$tar_path" "$sha_path" "$install_script" "$uninstall_script" \
               --repo "$PACKAGE_REPO" \
               --title "QManager ${casa_tag} for Casa CFW-3212" \
               --notes-file "$RUNNER_TEMP/release-notes.md" \
