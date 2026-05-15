@@ -300,8 +300,7 @@ jobs:
           Safety scope:
           - Casa install paths under /usrdata and /etc/systemd/system
           - HTTP 9080 and HTTPS 9000
-          - /dev/smd11 with bundled atcli_smd11
-          - no upstream OTA auto-updater
+          - /dev/smd11 with bundled atcli_smd11 (Rust)
           - no QCFG usbnet / ECM / MBIM / RNDIS exposure
           - no blind SIM profile auto-apply
           - no upstream IPPT QMAP modem writes

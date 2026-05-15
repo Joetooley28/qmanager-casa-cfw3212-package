@@ -153,8 +153,7 @@ The Casa package keeps these CFW-3212 safety constraints:
 
 - installs under `/usrdata` and writable `/etc/systemd/system`
 - uses HTTP `9080` and HTTPS `9000`
-- keeps `/dev/smd11` and bundled `atcli_smd11`
-- disables upstream OTA update paths
+- keeps `/dev/smd11` and bundled `atcli_smd11` (Rust)
 - blocks upstream USB composition / ECM / MBIM / RNDIS exposure
 - blocks blind SIM profile auto-apply
 - maps IP Passthrough to Casa-safe Ethernet enable/disable behavior
