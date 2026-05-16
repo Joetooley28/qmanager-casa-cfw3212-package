@@ -65,38 +65,6 @@ jobs:
         with:
           path: package
 
-      - name: Check converter repo access
-        shell: bash
-        env:
-          CONVERTER_REPO_TOKEN: ${{ secrets.CONVERTER_REPO_TOKEN }}
-        run: |
-          set -euo pipefail
-          if [ -z "${CONVERTER_REPO_TOKEN:-}" ]; then
-            cat >&2 <<'EOF'
-          Missing required secret: CONVERTER_REPO_TOKEN
-
-          The Casa converter repo is private, so the package repo GITHUB_TOKEN
-          cannot read it. Add a fine-grained token with read-only Contents
-          access to Joetooley28/qmanager-casa-conversion-cfw3212-gui-ota.
-          EOF
-            exit 1
-          fi
-
-      - name: Check out Casa converter
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ env.CONVERTER_REPO }}
-          path: converter
-          token: ${{ secrets.CONVERTER_REPO_TOKEN }}
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: stable
-
       - name: Resolve upstream app release
         id: resolve
         working-directory: package
@@ -164,7 +132,121 @@ jobs:
           printf 'Selected upstream app release: %s\n' "$upstream_tag"
           printf 'Casa release tag: %s\n' "$casa_tag"
 
+      - name: Check scheduled release drift
+        id: scheduled_check
+        working-directory: package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          upstream_tag="${{ steps.resolve.outputs.upstream_tag }}"
+
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            {
+              echo "should_build=true"
+              echo "reason=manual run requested"
+            } >> "$GITHUB_OUTPUT"
+            echo "Manual workflow run; continuing to build $upstream_tag."
+            exit 0
+          fi
+
+          gh api "repos/${PACKAGE_REPO}/releases?per_page=100" > "$RUNNER_TEMP/package-releases.json"
+
+          package_state="$(
+            python3 - "$RUNNER_TEMP/package-releases.json" "$upstream_tag" <<'PY'
+          import json
+          import re
+          import sys
+          from pathlib import Path
+
+          releases = json.loads(Path(sys.argv[1]).read_text())
+          current_upstream = sys.argv[2]
+          current_packaged = False
+          latest_packaged_upstream = ""
+
+          for rel in releases:
+              tag = rel.get("tag_name") or ""
+              match = re.fullmatch(r"(v\d+\.\d+\.\d+)-cfw3212\.(\d+)", tag)
+              if not match:
+                  continue
+              upstream = match.group(1)
+              assets = {asset.get("name") for asset in rel.get("assets", [])}
+              required = {
+                  f"qmanager-cfw3212-{upstream}.tar.gz",
+                  f"qmanager-cfw3212-{upstream}.sha256",
+              }
+              if required.issubset(assets):
+                  if not latest_packaged_upstream:
+                      latest_packaged_upstream = upstream
+                  if upstream == current_upstream:
+                      current_packaged = True
+
+          print(f"current_packaged={'true' if current_packaged else 'false'}")
+          print(f"latest_packaged_upstream={latest_packaged_upstream}")
+          PY
+          )"
+          eval "$package_state"
+
+          if [ "${current_packaged:-false}" = "true" ]; then
+            message="No new QManager release out yet. Latest upstream app release is still ${upstream_tag}, and a Casa package already exists."
+            {
+              echo "should_build=false"
+              echo "reason=$message"
+            } >> "$GITHUB_OUTPUT"
+            echo "$message"
+            {
+              echo "## No Casa Build Needed"
+              echo
+              echo "$message"
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          message="New upstream app release detected: ${upstream_tag}. Previous packaged upstream: ${latest_packaged_upstream:-none}."
+          {
+            echo "should_build=true"
+            echo "reason=$message"
+          } >> "$GITHUB_OUTPUT"
+          echo "$message"
+
+      - name: Check converter repo access
+        if: steps.scheduled_check.outputs.should_build == 'true'
+        shell: bash
+        env:
+          CONVERTER_REPO_TOKEN: ${{ secrets.CONVERTER_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CONVERTER_REPO_TOKEN:-}" ]; then
+            cat >&2 <<'EOF'
+          Missing required secret: CONVERTER_REPO_TOKEN
+
+          The Casa converter repo is private, so the package repo GITHUB_TOKEN
+          cannot read it. Add a fine-grained token with read-only Contents
+          access to Joetooley28/qmanager-casa-conversion-cfw3212-gui-ota.
+          EOF
+            exit 1
+          fi
+
+      - name: Check out Casa converter
+        if: steps.scheduled_check.outputs.should_build == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.CONVERTER_REPO }}
+          path: converter
+          token: ${{ secrets.CONVERTER_REPO_TOKEN }}
+
+      - name: Set up Bun
+        if: steps.scheduled_check.outputs.should_build == 'true'
+        uses: oven-sh/setup-bun@v2
+
+      - name: Set up Go
+        if: steps.scheduled_check.outputs.should_build == 'true'
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
       - name: Check release safety gates
+        if: steps.scheduled_check.outputs.should_build == 'true'
         id: safety
         shell: bash
         run: |
@@ -213,6 +295,7 @@ jobs:
             "$dry_run" "$create_release" "$prerelease" "$force" "$release_exists" "$existing_prerelease"
 
       - name: Build Casa package off-device
+        if: steps.scheduled_check.outputs.should_build == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -245,6 +328,7 @@ jobs:
           test -f qmanager-build/sha256sum.txt
 
       - name: Stage release assets
+        if: steps.scheduled_check.outputs.should_build == 'true'
         id: stage
         shell: bash
         run: |
@@ -280,6 +364,7 @@ jobs:
           ls -lh "$stage_dir"
 
       - name: Upload workflow artifact
+        if: steps.scheduled_check.outputs.should_build == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: casa-cfw3212-${{ steps.resolve.outputs.casa_tag }}
@@ -289,6 +374,7 @@ jobs:
           if-no-files-found: error
 
       - name: Write release notes
+        if: steps.scheduled_check.outputs.should_build == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -350,6 +436,7 @@ jobs:
             "$RUNNER_TEMP/release-notes.md"
 
       - name: Write install scripts
+        if: steps.scheduled_check.outputs.should_build == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -366,7 +453,7 @@ jobs:
                  "$RUNNER_TEMP/uninstall-qmanager-cfw3212.sh"
 
       - name: Create or update prerelease
-        if: steps.safety.outputs.create_release == 'true' && steps.safety.outputs.dry_run != 'true'
+        if: steps.scheduled_check.outputs.should_build == 'true' && steps.safety.outputs.create_release == 'true' && steps.safety.outputs.dry_run != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -397,7 +484,7 @@ jobs:
           fi
 
       - name: Dry-run summary
-        if: steps.safety.outputs.create_release != 'true' || steps.safety.outputs.dry_run == 'true'
+        if: steps.scheduled_check.outputs.should_build == 'true' && (steps.safety.outputs.create_release != 'true' || steps.safety.outputs.dry_run == 'true')
         shell: bash
         run: |
           set -euo pipefail

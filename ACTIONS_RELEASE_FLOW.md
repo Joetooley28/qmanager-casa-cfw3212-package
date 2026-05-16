@@ -45,8 +45,18 @@ create_release=false
 Those defaults build and upload a workflow artifact only. They do not create or
 modify GitHub Releases.
 
-The scheduled run checks every 6 hours and also uses safe dry-run behavior. It
-can detect and build a new upstream app release, but it will not publish assets.
+The scheduled run checks every 6 hours. It resolves the newest upstream app
+release, checks whether any valid Casa package release already exists for that
+upstream tag, and stops early when nothing changed:
+
+```text
+No new QManager release out yet. Latest upstream app release is still vX.Y.Z,
+and a Casa package already exists.
+```
+
+When a new upstream app release appears, the scheduled run continues as a safe
+dry run. It can build and upload a workflow artifact for review, but it will not
+publish release assets.
 
 ## Dry Run
 
