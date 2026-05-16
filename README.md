@@ -3,6 +3,16 @@
 Ready-to-install Casa CFW-3212 builds of QManager are published on this repo's
 GitHub Releases page.
 
+This repository is intentionally release-only. The public builder/converter
+source and GitHub Actions workflow live in:
+
+```text
+Joetooley28/qmanager-casa-cfw3212-builder
+```
+
+Published release assets are still hosted here, and router install/update flows
+should continue to use this package repo.
+
 ## Install Or Update
 
 Use one of these two methods. Most Windows users should use PowerShell.
@@ -144,8 +154,9 @@ Release tags follow this pattern:
 Example: upstream QManager `v0.1.9` becomes `v0.1.9-cfw3212.1` for the first
 Casa CFW-3212 package build.
 
-When upstream publishes a new QManager release, run the conversion workflow and
-publish a new GitHub Release with the converted Casa package assets.
+When upstream publishes a new QManager release, run the conversion workflow from
+the builder repo and publish a new GitHub Release here with the converted Casa
+package assets.
 
 ## Casa Safety Scope
 
