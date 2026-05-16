@@ -10,9 +10,10 @@ The workflow is:
 .github/workflows/build-casa-release.yml
 ```
 
-It checks `dr-dolomite/QManager-RM520N` releases, ignores non-app releases such
-as `language-packs`, converts the newest app release containing both
-`qmanager.tar.gz` and `sha256sum.txt`, and stages Casa package assets named:
+It checks `dr-dolomite/QManager-RM520N` releases and only accepts real app
+releases: tags matching `vX.Y.Z` that contain both `qmanager.tar.gz` and
+`sha256sum.txt`. That filters out non-app releases such as `language-packs`.
+It converts the selected app release and stages Casa package assets named:
 
 ```text
 qmanager-cfw3212-vX.Y.Z.tar.gz
@@ -61,7 +62,8 @@ create_release=false
 ```
 
 The run uploads a workflow artifact containing the staged `.tar.gz` and
-`.sha256` files.
+`.sha256` files. The one-line install/uninstall scripts are generated later for
+published GitHub Releases and are not part of the dry-run artifact.
 
 ## Create A Prerelease
 
@@ -79,6 +81,15 @@ create_release=true
 This creates a GitHub prerelease in
 `Joetooley28/qmanager-casa-cfw3212-package`, for example
 `v0.1.10-cfw3212.1`.
+
+Published prereleases upload four assets:
+
+```text
+qmanager-cfw3212-vX.Y.Z.tar.gz
+qmanager-cfw3212-vX.Y.Z.sha256
+install-qmanager-cfw3212.sh
+uninstall-qmanager-cfw3212.sh
+```
 
 If that tag already exists, the workflow refuses to upload or replace assets
 unless `force=true` is set. Use `force=true` only after explicitly deciding to
