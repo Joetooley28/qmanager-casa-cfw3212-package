@@ -3,6 +3,10 @@
 Ready-to-install Casa CFW-3212 builds of QManager are published on this repo's
 GitHub Releases page.
 
+Most users should use the prebuilt, ready-to-install package from the latest
+GitHub Release. The release page includes version-specific install commands and
+download assets, so you usually do not need to build anything yourself.
+
 This repository is intentionally release-only. The public builder/converter
 source and GitHub Actions workflow live in:
 
