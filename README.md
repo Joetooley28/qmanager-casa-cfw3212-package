@@ -3,6 +3,15 @@
 Ready-to-install Casa CFW-3212 builds of QManager are published on this repo's
 GitHub Releases page.
 
+## Credit
+
+QManager is built and maintained by **Rus | Ame** (`misuzu__` on Discord),
+GitHub **[dr-dolomite](https://github.com/dr-dolomite)**. The upstream project
+is **[dr-dolomite/QManager-RM520N](https://github.com/dr-dolomite/QManager-RM520N)**.
+
+Joetooley built only the Casa CFW-3212 converter/package flow for making
+QManager installable on the Casa CFW-3212.
+
 Most users should use the prebuilt, ready-to-install package from the latest
 GitHub Release. The release page includes version-specific install commands and
 download assets, so you usually do not need to build anything yourself.
