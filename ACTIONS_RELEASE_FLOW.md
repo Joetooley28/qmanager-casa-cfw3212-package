@@ -1,19 +1,21 @@
-# GitHub Actions Release Flow
+# Casa Package Release Flow
 
-This repo publishes Casa CFW-3212 converted QManager packages. The router should
-only install assets from this package repo, never raw upstream
+This repo is the official Casa CFW-3212 QManager package/download repo. The
+router should only install assets from this package repo, never raw upstream
 `dr-dolomite/QManager-RM520N` packages.
 
-The workflow is:
+The builder/converter source and GitHub Actions workflow live in the public
+builder repo:
 
 ```text
-.github/workflows/build-casa-release.yml
+Joetooley28/qmanager-casa-cfw3212-builder
 ```
 
-It checks `dr-dolomite/QManager-RM520N` releases and only accepts real app
-releases: tags matching `vX.Y.Z` that contain both `qmanager.tar.gz` and
-`sha256sum.txt`. That filters out non-app releases such as `language-packs`.
-It converts the selected app release and stages Casa package assets named:
+The builder workflow checks `dr-dolomite/QManager-RM520N` releases and only
+accepts real app releases: tags matching `vX.Y.Z` that contain both
+`qmanager.tar.gz` and `sha256sum.txt`. That filters out non-app releases such
+as `language-packs`. It converts the selected app release and stages Casa
+package assets named:
 
 ```text
 qmanager-cfw3212-vX.Y.Z.tar.gz
@@ -31,16 +33,19 @@ For example, upstream `v0.1.10` with Casa build `1` becomes
 
 ## Safe Defaults
 
-Manual runs default to:
+Builder workflow manual runs default to:
 
 ```text
 upstream_version=latest
 casa_build=1
-prerelease=true
 dry_run=true
 force=false
 create_release=false
 ```
+
+The workflow no longer exposes a `prerelease` input. Automation only publishes
+prereleases; stable promotion remains a manual GitHub release operation after
+live-router testing.
 
 Those defaults build and upload a workflow artifact only. They do not create or
 modify GitHub Releases.
@@ -65,15 +70,15 @@ Use these settings to test the full conversion without publishing:
 ```text
 upstream_version=latest
 casa_build=1
-prerelease=true
 dry_run=true
 force=false
 create_release=false
 ```
 
 The run uploads a workflow artifact containing the staged `.tar.gz` and
-`.sha256` files. The one-line install/uninstall scripts are generated later for
-published GitHub Releases and are not part of the dry-run artifact.
+`.sha256` files. The publish bundle artifact also includes the generated
+release notes and one-line install/uninstall scripts, but no GitHub Release is
+created or modified during a dry run.
 
 ## Create A Prerelease
 
@@ -82,14 +87,14 @@ After reviewing a dry-run artifact, use:
 ```text
 upstream_version=latest
 casa_build=1
-prerelease=true
 dry_run=false
 force=false
 create_release=true
 ```
 
-This creates a GitHub prerelease in
-`Joetooley28/qmanager-casa-cfw3212-package`, for example
+This requests a protected publish job. The job waits for approval on the
+`official-package-release` GitHub Actions environment, then creates a GitHub
+prerelease in `Joetooley28/qmanager-casa-cfw3212-package`, for example
 `v0.1.10-cfw3212.1`.
 
 Published prereleases upload four assets:
@@ -105,32 +110,44 @@ If that tag already exists, the workflow refuses to upload or replace assets
 unless `force=true` is set. Use `force=true` only after explicitly deciding to
 replace existing release assets.
 
+The generated release body must continue to include the upstream release-note
+link, SHA-256, router-has-internet install command, no-internet/manual install
+commands, and Casa safety scope.
+
 ## Stable Releases
 
-The workflow refuses `prerelease=false`. Stable promotion should remain a manual
-GitHub release operation after live-router testing.
+The workflow does not expose stable-release publishing. Automation only creates
+or updates prereleases. Stable promotion should remain a manual GitHub release
+operation after live-router testing.
 
 Normal router updater flows should ignore prereleases unless a future GUI option
 explicitly opts into prerelease checks.
 
 ## Permissions
 
-The workflow uses the built-in `GITHUB_TOKEN` with `contents: write` to create
-package repo releases.
+The builder workflow uses read-only default permissions. It can build artifacts
+without any package repo write token.
 
-Repository settings must allow GitHub Actions to create releases with the
-workflow token.
-
-Because the converter repo is private, add this package repo secret:
+The protected publish job uses this builder repo environment:
 
 ```text
-CONVERTER_REPO_TOKEN
+official-package-release
 ```
 
-Use a fine-grained token with read-only `Contents` access to:
+Configure that environment with:
+
+- required reviewer: the repo owner
+- environment secret: `PACKAGE_RELEASE_TOKEN`
 
 ```text
-Joetooley28/qmanager-casa-conversion-cfw3212-gui-ota
+PACKAGE_RELEASE_TOKEN
 ```
 
-No extra secret is required for public upstream release checks.
+Use a fine-grained token with `Contents: read and write` access only to:
+
+```text
+Joetooley28/qmanager-casa-cfw3212-package
+```
+
+No converter checkout token is required anymore because all converter and
+builder files live in the public builder repo.
