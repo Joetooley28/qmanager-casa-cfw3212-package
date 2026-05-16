@@ -19,6 +19,11 @@ Use one of these two methods. Most Windows users should use PowerShell.
 
 ### Method 1: Router Has Internet
 
+The release page commands are generated with that release's version tag. If you
+copy commands from this README instead, change the release tag to the version
+you want. Also change `192.168.1.1` anywhere it appears if your router LAN IP is
+not stock.
+
 SSH into the router from Windows PowerShell:
 
 ```powershell
@@ -41,6 +46,11 @@ This downloads the package, verifies the checksum, extracts it, and runs the
 Casa installer. It works for both fresh install and update.
 
 ### Method 2: Router Has No Internet
+
+The release page commands and asset names are generated for that release. If
+you copy commands from this README instead, change the version in the filename
+and release tag to the package you downloaded. Also change `192.168.1.1` if your
+router LAN IP is not stock.
 
 Use this path when the router does not have working internet yet. On your
 Windows computer, download this release asset:
@@ -80,6 +90,11 @@ configuration files when possible, including login/config data and TLS certs.
 
 ### Online Uninstall
 
+The release page commands are generated with that release's version tag. If you
+copy commands from this README instead, change the release tag to the version
+you want. Also change `192.168.1.1` anywhere it appears if your router LAN IP is
+not stock.
+
 SSH into the router from Windows PowerShell:
 
 ```powershell
@@ -93,6 +108,11 @@ curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases
 ```
 
 ### Offline Uninstall
+
+The release page commands and asset names are generated for that release. If
+you copy commands from this README instead, change the version in the filename
+and release tag to the package you downloaded. Also change `192.168.1.1` if your
+router LAN IP is not stock.
 
 If the router has no internet, use the same downloaded `.tar.gz` and run these
 two commands from Windows PowerShell:
