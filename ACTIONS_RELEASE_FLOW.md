@@ -106,6 +106,12 @@ install-qmanager-cfw3212.sh
 uninstall-qmanager-cfw3212.sh
 ```
 
+The generated one-line install script downloads the package tarball directly to
+`/tmp/qmanager.tar.gz`, verifies that file against the release checksum, extracts
+only `qmanager_install/install_cfw3212.sh`, and lets the Casa installer perform
+the single full package extraction. This avoids a second full tarball extract on
+the router during online installs.
+
 If that tag already exists, the workflow refuses to upload or replace assets
 unless `force=true` is set. Use `force=true` only after explicitly deciding to
 replace existing release assets.
