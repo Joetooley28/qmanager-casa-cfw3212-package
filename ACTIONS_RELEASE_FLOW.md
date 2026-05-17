@@ -112,13 +112,13 @@ replace existing release assets.
 
 The generated release body must continue to include the upstream release-note
 link, SHA-256, router-has-internet install command, no-internet/manual install
-commands, Casa safety scope, and a clear `Bot-built prerelease. Not yet
+commands, Casa safety scope, and a clear `Actions-built prerelease. Not yet
 live-router verified by JTooley.` note.
 
 Automation titles new prereleases as:
 
 ```text
-QManager vX.Y.Z-cfw3212.N for Casa CFW-3212 (bot-built, unverified)
+QManager vX.Y.Z-cfw3212.N for Casa CFW-3212 (Actions-built, unverified)
 ```
 
 After live-router testing passes, run the builder repo workflow
