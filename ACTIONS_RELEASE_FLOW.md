@@ -135,8 +135,8 @@ The generated release body must continue to include the upstream release-note
 link, credit and thanks for QManager maintainer Rus | Ame / GitHub
 `dr-dolomite`, SHA-256, router-has-internet install command,
 no-internet/manual install commands, online/offline uninstall commands, purge
-warning/command, Casa safety scope, and a clear `Actions-built prerelease. Not
-yet live-router verified by JTooley.` note.
+warning plus curl/wget purge commands, Casa safety scope, and a clear
+`Actions-built prerelease. Not yet live-router verified by JTooley.` note.
 
 Automation titles new prereleases as:
 
