@@ -110,6 +110,12 @@ If that tag already exists, the workflow refuses to upload or replace assets
 unless `force=true` is set. Use `force=true` only after explicitly deciding to
 replace existing release assets.
 
+The publish job re-checks whether the tag exists after protected-environment
+approval, creates new package releases through the GitHub Releases API as
+prereleases, and uploads assets with `gh release upload` so GitHub's release
+asset upload URL handling is used. If a tag appears between build and approval,
+`force=false` still refuses to replace assets.
+
 The generated release body must continue to include the upstream release-note
 link, SHA-256, router-has-internet install command, no-internet/manual install
 commands, Casa safety scope, and a clear `Actions-built prerelease. Not yet
