@@ -48,13 +48,13 @@ ssh root@192.168.1.1
 Then run this on the router:
 
 ```sh
-curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.7/install-qmanager-cfw3212.sh | sh
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/install-qmanager-cfw3212.sh | sh
 ```
 
 If `curl` fails, use `wget` instead:
 
 ```sh
-wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.7/install-qmanager-cfw3212.sh | sh
+wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/install-qmanager-cfw3212.sh | sh
 ```
 
 This downloads the package, verifies the checksum, extracts it, and runs the
@@ -119,13 +119,13 @@ ssh root@192.168.1.1
 Then run this on the router:
 
 ```sh
-curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.7/uninstall-qmanager-cfw3212.sh | sh
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/uninstall-qmanager-cfw3212.sh | sh
 ```
 
 If `curl` fails, use `wget` instead:
 
 ```sh
-wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.7/uninstall-qmanager-cfw3212.sh | sh
+wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/uninstall-qmanager-cfw3212.sh | sh
 ```
 
 ### Offline Uninstall
@@ -153,6 +153,8 @@ ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.
 Default uninstall removes QManager services, `/usrdata/qmanager`, and
 QManager-installed binaries under `/usrdata/bin`. It preserves `/etc/qmanager`
 and `/usrdata/opt` so config and Entware payloads are not destroyed casually.
+The online uninstall wrapper verifies the release tarball but extracts only the
+Casa uninstaller script, avoiding a full package expansion during uninstall.
 
 For a deeper cleanup, add `--purge` to the uninstall command:
 
@@ -163,13 +165,13 @@ ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.
 For online purge, SSH into the router and run:
 
 ```sh
-curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.7/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
 ```
 
 Or with `wget`:
 
 ```sh
-wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.7/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
+wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
 ```
 
 `--purge` removes `/etc/qmanager`, `/usrdata/opt`, QManager-owned runtime temp
@@ -185,10 +187,10 @@ installs, you can verify the downloaded tarball in PowerShell:
 Get-FileHash .\qmanager-cfw3212-v0.1.10.tar.gz -Algorithm SHA256
 ```
 
-Expected SHA-256 for `v0.1.10-cfw3212.7`:
+Expected SHA-256 for `v0.1.10-cfw3212.16`:
 
 ```text
-87799cda3a2477bb7a315f0a0a3f27b4da3733753a008551ed1ca07934d1bfd1
+dc0094310ec1fbfddd3304e3b0292ccaa7f40e6dd492955d8388118639946b61
 ```
 
 ## Versioning
