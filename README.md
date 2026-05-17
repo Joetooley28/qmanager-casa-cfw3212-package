@@ -1,7 +1,7 @@
 # QManager Casa CFW-3212 Package Releases
 
 Ready-to-install Casa CFW-3212 builds of QManager are published on this repo's
-GitHub Releases page.
+[GitHub Releases page](https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases).
 
 ## Credit
 
