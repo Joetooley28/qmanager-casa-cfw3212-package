@@ -163,8 +163,9 @@ The workflow does not expose stable-release publishing. Automation only creates
 or updates prereleases. Stable promotion should remain a manual GitHub release
 operation after live-router testing.
 
-Normal router updater flows should ignore prereleases unless a future GUI option
-explicitly opts into prerelease checks.
+The Casa CFW-3212 GUI updater is intentionally allowed to show these package
+prereleases by default because this repo's automation publishes prereleases
+only. Automatic unattended updates remain disabled in the Casa build.
 
 ## Permissions
 
