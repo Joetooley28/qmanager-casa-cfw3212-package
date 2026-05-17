@@ -120,6 +120,12 @@ Then run this on the router:
 curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.7/uninstall-qmanager-cfw3212.sh | sh
 ```
 
+If `curl` fails, use `wget` instead:
+
+```sh
+wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.7/uninstall-qmanager-cfw3212.sh | sh
+```
+
 ### Offline Uninstall
 
 The release page commands and asset names are generated for that release. If
@@ -158,8 +164,15 @@ For online purge, SSH into the router and run:
 curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.7/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
 ```
 
-`--purge` removes `/etc/qmanager` and `/usrdata/opt` too. Use it only when you
-really want to discard QManager config and bundled Entware state.
+Or with `wget`:
+
+```sh
+wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.7/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
+```
+
+`--purge` removes `/etc/qmanager`, `/usrdata/opt`, QManager-owned runtime temp
+files, and QManager sudoers drop-ins too. Use it only when you really want to
+discard QManager config and bundled Entware state.
 
 ## Optional Checksum
 
