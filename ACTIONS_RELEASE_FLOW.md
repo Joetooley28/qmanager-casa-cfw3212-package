@@ -135,7 +135,9 @@ QManager vX.Y.Z-cfw3212.N for Casa CFW-3212 (Actions-built, unverified)
 After live-router testing passes, run the builder repo workflow
 `Mark Casa package release verified` with the Casa release tag. It keeps the
 same tested release assets and edits only the release title/body, changing the
-label to `router-verified by JTooley`.
+title label from `(Actions-built, unverified)` to `router-verified by JTooley`
+and changing the body status line to say the package has been live-router
+verified.
 
 ## Stable Releases
 
