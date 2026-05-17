@@ -112,6 +112,10 @@ only `qmanager_install/install_cfw3212.sh`, and lets the Casa installer perform
 the single full package extraction. This avoids a second full tarball extract on
 the router during online installs.
 
+The generated one-line uninstall script also verifies the release tarball but
+extracts only `qmanager_install/uninstall_cfw3212.sh`. That keeps online
+uninstall from expanding the full frontend payload just to remove QManager.
+
 If that tag already exists, the workflow refuses to upload or replace assets
 unless `force=true` is set. Use `force=true` only after explicitly deciding to
 replace existing release assets.
