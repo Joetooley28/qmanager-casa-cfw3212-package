@@ -190,7 +190,7 @@ Get-FileHash .\qmanager-cfw3212-v0.1.10.tar.gz -Algorithm SHA256
 Expected SHA-256 for `v0.1.10-cfw3212.16`:
 
 ```text
-dc0094310ec1fbfddd3304e3b0292ccaa7f40e6dd492955d8388118639946b61
+13d951477a1ab1c8bf40b4cad06752798367b858eb92b485b0f6888c0c853393
 ```
 
 ## Versioning
