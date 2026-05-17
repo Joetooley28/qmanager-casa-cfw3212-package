@@ -116,6 +116,11 @@ prereleases, and uploads assets with `gh release upload` so GitHub's release
 asset upload URL handling is used. If a tag appears between build and approval,
 `force=false` still refuses to replace assets.
 
+The builder stages the publish bundle as one flat artifact directory containing
+the tarball, checksum, release notes, and one-line install/uninstall scripts.
+The publish job validates those files before creating a release and prints the
+downloaded bundle contents if anything is missing.
+
 The generated release body must continue to include the upstream release-note
 link, SHA-256, router-has-internet install command, no-internet/manual install
 commands, Casa safety scope, and a clear `Actions-built prerelease. Not yet
