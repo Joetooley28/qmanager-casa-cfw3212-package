@@ -132,6 +132,12 @@ the router during online installs.
 The generated one-line uninstall script also verifies the release tarball but
 extracts only `qmanager_install/uninstall_cfw3212.sh`. That keeps online
 uninstall from expanding the full frontend payload just to remove QManager.
+Default uninstall removes QManager services, `/usrdata/qmanager`, QManager
+binaries, the Ookla `speedtest` binary, and the optional Web Console `ttyd`
+binary because `ttyd` lives under `/usrdata/qmanager/console`.
+`--purge` additionally removes preserved config, bundled Entware state,
+Tailscale service/state/symlinks installed by QManager, root Ookla CLI config,
+and transient Tailscale logs.
 
 The generated GUI update worker uses the same no-extra-full-extract handoff for
 installing a staged package. It links the staged tarball to
@@ -158,7 +164,9 @@ The generated release body must continue to include the upstream release-note
 link, credit and thanks for QManager maintainer Rus | Ame / GitHub
 `dr-dolomite`, SHA-256, router-has-internet install command,
 no-internet/manual install commands, online/offline uninstall commands, purge
-warning plus curl/wget purge commands, Casa safety scope, and a clear
+warning plus curl/wget purge commands, note that purge removes optional
+QManager-installed tools such as Tailscale state/symlinks and root Ookla CLI
+config, Casa safety scope, and a clear
 `Actions-built prerelease. Not yet live-router verified by JTooley.` note.
 The compact Joetooley/Dr. D updater changelog must stay in the separate JSON
 asset, not in the release body.
