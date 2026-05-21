@@ -175,8 +175,10 @@ wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/
 ```
 
 `--purge` removes `/etc/qmanager`, `/usrdata/opt`, QManager-owned runtime temp
-files, and QManager sudoers drop-ins too. Use it only when you really want to
-discard QManager config and bundled Entware state.
+files, QManager sudoers drop-ins, QManager-installed Tailscale service/state
+and symlinks, root Ookla CLI config, and transient Tailscale logs too. Use it
+only when you really want to discard QManager config, bundled Entware state,
+and optional QManager-installed tools.
 
 ## Optional Checksum
 
