@@ -118,6 +118,11 @@ Software Update page to switch the existing release-notes panel between
 `Joetooley` Casa-port bullets and `Dr. D` upstream release notes. It does not
 change the GitHub release page body.
 
+The builder refuses to build if the curated changelog source does not mention
+the exact Casa release tag being built, for example `v0.1.10-cfw3212.22`. Before
+running a new package build, add or update the short Joetooley section for that
+tag in the builder repo changelog source.
+
 The generated one-line install script downloads the package tarball directly to
 `/tmp/qmanager.tar.gz`, verifies that file against the release checksum, extracts
 only `qmanager_install/install_cfw3212.sh`, and lets the Casa installer perform
