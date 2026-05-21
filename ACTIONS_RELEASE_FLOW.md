@@ -162,7 +162,9 @@ downloaded bundle contents if anything is missing.
 
 The generated release body must continue to include the upstream release-note
 link, credit and thanks for QManager maintainer Rus | Ame / GitHub
-`dr-dolomite`, SHA-256, router-has-internet install command,
+`dr-dolomite`, a Joetooley credit scoped to the Casa CFW-3212
+converter/package flow and small UI compatibility changes, SHA-256,
+router-has-internet install command,
 no-internet/manual install commands, online/offline uninstall commands, purge
 warning plus curl/wget purge commands, note that purge removes optional
 QManager-installed tools such as Tailscale state/symlinks and root Ookla CLI

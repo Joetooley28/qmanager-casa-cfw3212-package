@@ -11,8 +11,9 @@ for all the hard work building, maintaining, and sharing QManager with the
 community. The upstream project is
 **[dr-dolomite/QManager-RM520N](https://github.com/dr-dolomite/QManager-RM520N)**.
 
-Joetooley built only the Casa CFW-3212 converter/package flow for making
-QManager installable on the Casa CFW-3212.
+Joetooley built only the Casa CFW-3212 converter/package flow and small UI
+compatibility changes needed to make QManager installable and usable on the
+Casa CFW-3212.
 
 Most users should use the prebuilt, ready-to-install package from the latest
 GitHub Release. The release page includes version-specific install commands and
