@@ -150,6 +150,10 @@ cover profile save/apply/delete/deactivate, including APN, TTL/HL, IMEI, and
 the `AT+CFUN=1,1` modem reboot apply path. Blind ICCID-matched SIM Profile
 auto-apply remains disabled by default; only build with
 `CASA_PROFILE_AUTO_APPLY=1` when intentionally testing upstream auto-apply.
+Check that profiles whose live ICCID is reported with a trailing `F` padding
+nibble do not show a false SIM mismatch after apply. Also check that the Home
+page does not show `Data Delayed` when the status timestamp is advancing, even
+if the router wall clock is wrong.
 
 If that tag already exists, the workflow refuses to upload or replace assets
 unless `force=true` is set. Use `force=true` only after explicitly deciding to
