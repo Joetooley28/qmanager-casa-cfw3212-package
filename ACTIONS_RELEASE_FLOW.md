@@ -145,6 +145,12 @@ installing a staged package. It links the staged tarball to
 only `qmanager_install/install_cfw3212.sh` into a small worker directory, and
 lets the Casa installer perform the single full package extraction.
 
+Manual SIM Profiles are enabled in Casa builds. Release smoke testing should
+cover profile save/apply/delete/deactivate, including APN, TTL/HL, IMEI, and
+the `AT+CFUN=1,1` modem reboot apply path. Blind ICCID-matched SIM Profile
+auto-apply remains disabled by default; only build with
+`CASA_PROFILE_AUTO_APPLY=1` when intentionally testing upstream auto-apply.
+
 If that tag already exists, the workflow refuses to upload or replace assets
 unless `force=true` is set. Use `force=true` only after explicitly deciding to
 replace existing release assets.
