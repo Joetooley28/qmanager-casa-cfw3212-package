@@ -9,6 +9,7 @@
 - Email Alerts can install and remove `msmtp` through the Casa Entware package flow. The Gmail app-password setup and an actual test send are the last things you have to confirm on your end.
 - Discord Bot backend is now part of the Casa package, so you can plug in your own Discord bot token and user ID and try the UI.
 - SIM Profiles can be saved, applied, deleted, and deactivated by hand on Casa. That includes APN, TTL/HL, IMEI, and the modem reboot apply step. The blind "auto-apply by ICCID" behavior is still off by default.
+- Custom DNS works from the QManager UI, including custom upstream resolvers for LAN clients without changing DHCP leases or rebooting the router.
 - A handful of upstream modem-management actions stay blocked or limited on Casa because they'd let you push the modem into a state we don't want it in.
 
 ## v0.1.11-cfw3212.3
