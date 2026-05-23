@@ -3,6 +3,10 @@
 Ready-to-install Casa CFW-3212 builds of QManager are published on this repo's
 [GitHub Releases page](https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases).
 
+Casa-specific notes are tracked in the
+[Casa CFW-3212 changelog](CFW3212_JTOOLEY_CHANGELOG.md). The router Software
+Update page also shows these notes inside QManager.
+
 ## Credit
 
 QManager is built and maintained by **Rus | Ame** (`misuzu__` on Discord),

@@ -118,6 +118,17 @@ Software Update page to switch the existing release-notes panel between
 `Joetooley` Casa-port bullets and `Dr. D` upstream release notes. It does not
 change the GitHub release page body.
 
+This package repo also keeps a rendered public Markdown copy at:
+
+```text
+CFW3212_JTOOLEY_CHANGELOG.md
+```
+
+The root README and generated package release bodies link to that Markdown page
+for a human-readable Casa changelog. Keep it public-facing and sanitized, and
+sync it with the builder repo's curated changelog source when those notes
+change.
+
 The builder refuses to build if the curated changelog source does not mention
 the exact Casa release tag being built, for example `v0.1.10-cfw3212.22`. Before
 running a new package build, add or update the short Joetooley section for that
@@ -180,8 +191,9 @@ warning plus curl/wget purge commands, note that purge removes optional
 QManager-installed tools such as Tailscale state/symlinks and root Ookla CLI
 config, Casa safety scope, and a clear
 `Actions-built prerelease. Not yet live-router verified by JTooley.` note.
-The compact Joetooley/Dr. D updater changelog must stay in the separate JSON
-asset, not in the release body.
+The full Joetooley/Dr. D updater changelog must stay in the separate JSON
+asset for the router UI. The release body should include only the trimmed
+human-readable Casa summary plus a link to the package repo Markdown changelog.
 
 Automation titles new prereleases as:
 
