@@ -10,7 +10,12 @@
 - Discord Bot backend is now part of the Casa package, so you can plug in your own Discord bot token and user ID and try the UI. (wired up, not tested yet)
 - SIM Profiles can be saved, applied, deleted, and deactivated by hand on Casa. That includes APN, TTL/HL, IMEI, and the modem reboot apply step. The blind "auto-apply by ICCID" behavior is still off by default.
 - Custom DNS works from the QManager UI, including custom upstream resolvers for LAN clients without changing DHCP leases or rebooting the router.
+- The Reconnect Network menu action now uses Casa's connection manager path instead of forcing a modem deregister/re-register.
 - A handful of upstream modem-management actions stay blocked or limited on Casa because they'd let you push the modem into a state we don't want it in.
+
+## v0.1.11-cfw3212.4
+
+- Reconnect Network now asks Casa's own connection manager to refresh the cellular session instead of forcing the modem through a hard deregister/re-register cycle. This should make that menu action much gentler on the router.
 
 ## v0.1.11-cfw3212.3
 
