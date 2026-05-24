@@ -15,6 +15,11 @@
 - Software Update → Version Management can now install a different version (including rollbacks). After the download verifies, the Install button switches to "Install Now" so the staged package actually gets applied instead of being left on disk.
 - A handful of upstream modem-management actions stay blocked or limited on Casa because they'd let you push the modem into a state we don't want it in.
 
+## v0.1.11-cfw3212.6
+
+- Version Management now shows a "Staged and ready to install" banner with **Install Now** and **Discard** buttons whenever a downloaded package is sitting on the router. You can drop the staged tarball without being forced to install it first if you change your mind about a downgrade.
+- The router reboot countdown screen now waits 120 seconds before declaring the reboot stuck, up from 70 seconds, so slower Casa reboots don't trip the "still rebooting?" warning prematurely.
+
 ## v0.1.11-cfw3212.5
 
 - Software Update → Version Management now finishes the install flow on Casa. Previously, picking an older version downloaded it but the page snapped back to "Up to date" and never offered an Install button, so the staged tarball just sat in /tmp. The button now transitions to "Install Now" once the download is verified, calls the staged-install flow, and reboots into the selected version.
