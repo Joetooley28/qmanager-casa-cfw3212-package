@@ -15,6 +15,10 @@
 - Software Update → Version Management can now install a different version (including rollbacks). After the download verifies, the Install button switches to "Install Now" so the staged package actually gets applied instead of being left on disk.
 - A handful of upstream modem-management actions stay blocked or limited on Casa because they'd let you push the modem into a state we don't want it in.
 
+## v0.1.11-cfw3212.7
+
+- Watchcat (the automatic recovery daemon) now uses the same Casa-friendly paths the manual UI buttons use. Tier 1 "re-register to network" asks Casa's connection manager via `link.profile.1.writeflag` / `link.policy.1.trigger_connect` instead of forcing the modem through `AT+COPS=2/0`. Tier 4 "reboot device" goes through `service.system.reset` instead of a bare `reboot`. Both still fall back to the legacy behavior if the Casa RDB keys aren't available, so non-Casa builds are unaffected.
+
 ## v0.1.11-cfw3212.6
 
 - Version Management now shows a "Staged and ready to install" banner with **Install Now** and **Discard** buttons whenever a downloaded package is sitting on the router. You can drop the staged tarball without being forced to install it first if you change your mind about a downgrade.
