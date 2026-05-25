@@ -17,6 +17,7 @@
 
 ## v0.1.12-cfw3212.1
 
+- Ookla Speedtest dashboard no longer crashes when the test result is missing Download or Upload latency stats (which Ookla omits when packet loss is high enough that those numbers wouldn't be meaningful). The DL Latency and UL Latency fields now render `—` instead of throwing a JavaScript error that took the dashboard down.
 - First Casa build on top of upstream QManager v0.1.12. Notable upstream changes you'll see on the router:
   - **Upload/Download orientation auto-probe** at first boot: QManager runs a small (5 MB) outbound probe and uses the result to map rmnet rx/tx to "upload" vs "download" the right way on Casa. Older builds sometimes had these swapped.
   - **Storage row** is now part of the Device Metrics dashboard, showing `/usrdata` usage.
