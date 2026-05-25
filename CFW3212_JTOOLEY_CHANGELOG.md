@@ -15,6 +15,16 @@
 - Software Update → Version Management can now install a different version (including rollbacks). After the download verifies, the Install button switches to "Install Now" so the staged package actually gets applied instead of being left on disk.
 - A handful of upstream modem-management actions stay blocked or limited on Casa because they'd let you push the modem into a state we don't want it in.
 
+## v0.1.12-cfw3212.1
+
+- First Casa build on top of upstream QManager v0.1.12. Notable upstream changes you'll see on the router:
+  - **Upload/Download orientation auto-probe** at first boot: QManager runs a small (5 MB) outbound probe and uses the result to map rmnet rx/tx to "upload" vs "download" the right way on Casa. Older builds sometimes had these swapped.
+  - **Storage row** is now part of the Device Metrics dashboard, showing `/usrdata` usage.
+  - **Live Traffic widget** has been removed. The kernel counters it relied on read near-zero because the Casa IPA hardware offload bypasses them, so the widget was misleading. Throughput numbers from Ookla Speedtest are still accurate.
+  - **IP Passthrough Apply & Reboot** now actually reboots. Previously, on Casa, pressing Apply could update the profile without triggering the reboot — you now go through the standard reboot countdown screen.
+  - **OTA reboot pages** no longer show a blank screen between "rebooting" and "back online". All reboot flows wait for the page to be ready before redirecting.
+- All CFW-3212 patches from v0.1.11 carry forward: Casa paths, health-check, watchcat tiers, Ookla speedtest poller pause, Custom DNS, IP Passthrough cleanup, Version Management Install fix.
+
 ## v0.1.11-cfw3212.8
 
 - Ookla Speedtest now pauses QManager's modem poller while the test is running. This prevents the poller from issuing modem AT reads during the test and keeps Speedtest-created latency or packet-loss spikes out of Recent Network Events.
