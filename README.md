@@ -35,7 +35,21 @@ should continue to use this package repo.
 
 ## Install Or Update
 
-Use one of these two methods. Most Windows users should use PowerShell.
+There are three ways to install or update, easiest first:
+
+- **From the router UI (easiest).** Open QManager and go to **Software Update**,
+  then install the latest version from there. The router fetches the current
+  package on its own — you do not need any of the commands below.
+- **Windows PowerShell / SSH, router has internet** — Method 1 below.
+- **Offline, router has no internet** — Method 2 below.
+
+> The commands in this README use `<RELEASE_TAG>` (for example
+> `v0.1.12-cfw3212.13`) and `<VERSION>` (for example `v0.1.12`) as placeholders.
+> Every [GitHub Release](https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases)
+> page already shows ready-to-paste install/uninstall commands that are
+> auto-generated with that release's exact version. The simplest path is to copy
+> the commands straight from the latest release; otherwise replace the
+> placeholders below with the version you want.
 
 ### Method 1: Router Has Internet
 
@@ -53,13 +67,13 @@ ssh root@192.168.1.1
 Then run this on the router:
 
 ```sh
-curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/install-qmanager-cfw3212.sh | sh
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/<RELEASE_TAG>/install-qmanager-cfw3212.sh | sh
 ```
 
 If `curl` fails, use `wget` instead:
 
 ```sh
-wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/install-qmanager-cfw3212.sh | sh
+wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/<RELEASE_TAG>/install-qmanager-cfw3212.sh | sh
 ```
 
 This downloads the package, verifies the checksum, extracts it, and runs the
@@ -75,7 +89,7 @@ router LAN IP is not stock.
 Use this path when the router does not have working internet yet. On your
 Windows computer, download this release asset:
 
-- `qmanager-cfw3212-v0.1.10.tar.gz`
+- `qmanager-cfw3212-<VERSION>.tar.gz`
 
 Do not extract the `.tar.gz` on Windows. If Windows already opened/extracted it
 into a folder, go back to the folder that contains the original `.tar.gz` file.
@@ -83,7 +97,7 @@ into a folder, go back to the folder that contains the original `.tar.gz` file.
 Then run these two commands from Windows PowerShell in that folder:
 
 ```powershell
-scp -O .\qmanager-cfw3212-v0.1.10.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+scp -O .\qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
 ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/install_cfw3212.sh"
 ```
 
@@ -92,7 +106,7 @@ The `-O` flag uses legacy SCP mode, which is needed by some Casa SSH setups.
 If you prefer Linux/WSL, use the same two-step flow:
 
 ```sh
-scp -O qmanager-cfw3212-v0.1.10.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+scp -O qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
 ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/install_cfw3212.sh'
 ```
 
@@ -124,13 +138,13 @@ ssh root@192.168.1.1
 Then run this on the router:
 
 ```sh
-curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/uninstall-qmanager-cfw3212.sh | sh
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/<RELEASE_TAG>/uninstall-qmanager-cfw3212.sh | sh
 ```
 
 If `curl` fails, use `wget` instead:
 
 ```sh
-wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/uninstall-qmanager-cfw3212.sh | sh
+wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/<RELEASE_TAG>/uninstall-qmanager-cfw3212.sh | sh
 ```
 
 ### Offline Uninstall
@@ -144,14 +158,14 @@ If the router has no internet, use the same downloaded `.tar.gz` and run these
 two commands from Windows PowerShell:
 
 ```powershell
-scp -O .\qmanager-cfw3212-v0.1.10.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+scp -O .\qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
 ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot"
 ```
 
 Linux/WSL:
 
 ```sh
-scp -O qmanager-cfw3212-v0.1.10.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+scp -O qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
 ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot'
 ```
 
@@ -170,18 +184,18 @@ ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.
 For online purge, SSH into the router and run:
 
 ```sh
-curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
+curl -fsSL https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/<RELEASE_TAG>/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
 ```
 
 Or with `wget`:
 
 ```sh
-wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/v0.1.10-cfw3212.16/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
+wget -qO- https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases/download/<RELEASE_TAG>/uninstall-qmanager-cfw3212.sh | sh -s -- --purge
 ```
 
 `--purge` removes `/etc/qmanager`, `/usrdata/opt`, QManager-owned runtime temp
 files, QManager sudoers drop-ins, QManager-installed Tailscale service/state
-and symlinks, root Ookla CLI config, and transient Tailscale logs too. Use it
+and symlinks, root Ookla CLI config, the Email Alerts `msmtp` helper, and transient Tailscale logs too. Use it
 only when you really want to discard QManager config, bundled Entware state,
 and optional QManager-installed tools.
 
@@ -191,14 +205,11 @@ The online installer checks the package automatically. For offline Windows
 installs, you can verify the downloaded tarball in PowerShell:
 
 ```powershell
-Get-FileHash .\qmanager-cfw3212-v0.1.10.tar.gz -Algorithm SHA256
+Get-FileHash .\qmanager-cfw3212-<VERSION>.tar.gz -Algorithm SHA256
 ```
 
-Expected SHA-256 for `v0.1.10-cfw3212.16`:
-
-```text
-634e5ec78b4ca7dbfab4d6ade9895dadf3b2ed26fa25aa8d4f2cf4139b3a5d69
-```
+Then compare the output against the `qmanager-cfw3212-<VERSION>.tar.gz.sha256`
+checksum asset published next to the package on its release page.
 
 ## Versioning
 
