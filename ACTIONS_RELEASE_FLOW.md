@@ -18,8 +18,8 @@ as `language-packs`. It converts the selected app release and stages Casa
 package assets named:
 
 ```text
-qmanager-cfw3212-vX.Y.Z.tar.gz
-qmanager-cfw3212-vX.Y.Z.sha256
+qmanager-cfw3212-vX.Y.Z-cfw3212.N.tar.gz
+qmanager-cfw3212-vX.Y.Z-cfw3212.N.sha256
 ```
 
 Casa release tags use:
@@ -31,13 +31,26 @@ vX.Y.Z-cfw3212.N
 For example, upstream `v0.1.10` with Casa build `1` becomes
 `v0.1.10-cfw3212.1`.
 
+Dev branch artifacts are not package-repo releases. They are numbered as
+iterations toward the next public release:
+
+```text
+vX.Y.Z-cfw3212.N.1.dev
+vX.Y.Z-cfw3212.N.2.dev
+```
+
+If the highest published release is `v0.1.12-cfw3212.20`, the default `dev`
+builds are `v0.1.12-cfw3212.21.1.dev`, `.21.2.dev`, and so on. When the tested
+`dev` work is merged to `main` and published, the public release is
+`v0.1.12-cfw3212.21`.
+
 ## Safe Defaults
 
 Builder workflow manual runs default to:
 
 ```text
 upstream_version=latest
-casa_build=1
+casa_build=next
 dry_run=true
 force=false
 create_release=false
@@ -69,7 +82,7 @@ Use these settings to test the full conversion without publishing:
 
 ```text
 upstream_version=latest
-casa_build=1
+casa_build=next
 dry_run=true
 force=false
 create_release=false
@@ -86,7 +99,7 @@ After reviewing a dry-run artifact, use:
 
 ```text
 upstream_version=latest
-casa_build=1
+casa_build=next
 dry_run=false
 force=false
 create_release=true
@@ -100,8 +113,8 @@ prerelease in `Joetooley28/qmanager-casa-cfw3212-package`, for example
 Published prereleases upload four assets:
 
 ```text
-qmanager-cfw3212-vX.Y.Z.tar.gz
-qmanager-cfw3212-vX.Y.Z.sha256
+qmanager-cfw3212-vX.Y.Z-cfw3212.N.tar.gz
+qmanager-cfw3212-vX.Y.Z-cfw3212.N.sha256
 install-qmanager-cfw3212.sh
 uninstall-qmanager-cfw3212.sh
 ```
