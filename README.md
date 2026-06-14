@@ -234,5 +234,7 @@ The Casa package keeps these CFW-3212 safety constraints:
 - uses HTTP `9080` and HTTPS `9000`
 - keeps `/dev/smd11` and bundled `atcli_smd11` (Rust)
 - blocks upstream USB composition / ECM / MBIM / RNDIS exposure
-- blocks blind SIM profile auto-apply
+- keeps manual SIM Profiles enabled and exposes ICCID-matched profile
+  auto-apply as an explicit SIM Profiles page toggle, off by default
+- disables Watchdog backup-SIM recovery on Casa CFW-3212 single-SIM hardware
 - maps IP Passthrough to Casa-safe Ethernet enable/disable behavior

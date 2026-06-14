@@ -171,9 +171,10 @@ lets the Casa installer perform the single full package extraction.
 
 Manual SIM Profiles are enabled in Casa builds. Release smoke testing should
 cover profile save/apply/delete/deactivate, including APN, TTL/HL, IMEI, and
-the `AT+CFUN=1,1` modem reboot apply path. Blind ICCID-matched SIM Profile
-auto-apply remains disabled by default; only build with
-`CASA_PROFILE_AUTO_APPLY=1` when intentionally testing upstream auto-apply.
+the `AT+CFUN=1,1` modem reboot apply path. ICCID-matched SIM Profile
+auto-apply is available as an explicit SIM Profiles UI toggle and remains off
+by default. Watchdog backup-SIM recovery is disabled on Casa CFW-3212 because
+the hardware has one SIM slot.
 Check that profiles whose live ICCID is reported with a trailing `F` padding
 nibble do not show a false SIM mismatch after apply. Also check that the Home
 page does not show `Data Delayed` when the status timestamp is advancing, even

@@ -8,7 +8,8 @@
 - Ookla Speedtest works once the `speedtest` helper is installed. install handles if connected to internet.
 - Email Alerts can install and remove `msmtp` through the Casa Entware package flow. The Gmail app-password setup and an actual test send are the last things to confirm working on your end. (wired up, not tested yet) 
 - Discord Bot backend is now part of the Casa package, so you can plug in your own Discord bot token and user ID and try the UI. (wired up, not tested yet)
-- SIM Profiles can be saved, applied, deleted, and deactivated by hand on Casa. That includes APN, TTL/HL, IMEI, and the modem reboot apply step. The blind "auto-apply by ICCID" behavior is still off by default.
+- SIM Profiles can be saved, applied, deleted, and deactivated by hand on Casa. That includes APN, TTL/HL, IMEI, and the modem reboot apply step. ICCID-matched auto-apply is available as an explicit on/off setting in the SIM Profiles page and stays off until you turn it on.
+- Watchdog backup-SIM recovery is disabled on Casa CFW-3212 because this hardware has one SIM slot.
 - Custom DNS works from the QManager UI, including custom upstream resolvers for LAN clients without changing DHCP leases or rebooting the router.
 - The Reconnect Network menu action now uses Casa's connection manager path instead of forcing a modem deregister/re-register.
 - Reconnect Network now keeps a small progress window open so you can watch elapsed time, network registration, WAN IP, and internet status while the router comes back online.
@@ -69,12 +70,12 @@
 ## v0.1.10 Casa Updates
 
 - Kept two v0.1.10 package releases available: `v0.1.10-cfw3212.16` as the router-verified checkpoint, and `v0.1.10-cfw3212.25` as the final v0.1.10 Casa package.
-- Manual SIM Profile save, apply, delete, and deactivate works on Casa, including APN, TTL/HL, IMEI, and the modem reboot apply step. Blind auto-apply by ICCID stays off by default.
+- Manual SIM Profile save, apply, delete, and deactivate works on Casa, including APN, TTL/HL, IMEI, and the modem reboot apply step. ICCID auto-apply is safety-limited and now requires the explicit SIM Profiles page toggle.
 - Casa/RG520N ICCID handling was cleaned up so SIM Profiles do not show false SIM mismatch warnings from a missing trailing padding nibble.
 - Dashboard freshness checks tolerate Casa boxes with a wrong wall clock as long as the router status timestamp keeps advancing.
 - Web Console, Software Update Casa notes, Email Alerts `msmtp` install/remove, Discord Bot backend install, Tailscale, and Ookla Speedtest support were added or tightened during the v0.1.10 Casa series.
 - Installs and GUI updates were made gentler on router flash: fewer unnecessary file writes, no duplicate full tarball extraction during online install/update, and GUI updates end in a reboot-required state instead of rebooting automatically.
-- Casa package safety limits stayed in place around USB composition, upstream IP Passthrough modem writes, and blind SIM Profile auto-apply.
+- Casa package safety limits stayed in place around USB composition, upstream IP Passthrough modem writes, and automatic SIM Profile apply behavior.
 
 ## Earlier Highlights
 
@@ -82,4 +83,4 @@
 - Cut down on router flash churn: skip frontend payloads that haven't changed, compare before copying, pace fresh installs, and don't extract the tarball twice during online installs/updates.
 - GUI updates now end in a reboot-required state instead of rebooting on their own. You decide when the reboot happens.
 - QManager install paths are mapped to Casa's writable storage at `/usrdata` and `/etc/systemd/system`, with lighttpd on HTTP `9080` and HTTPS `9000`.
-- Kept the Casa safety lines drawn around USB composition, upstream IP Passthrough modem writes, and blind SIM profile auto-apply.
+- Kept the Casa safety lines drawn around USB composition, upstream IP Passthrough modem writes, and automatic SIM Profile apply behavior.
