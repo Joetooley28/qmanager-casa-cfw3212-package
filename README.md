@@ -172,6 +172,8 @@ ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.
 Default uninstall removes QManager services, `/usrdata/qmanager`, and
 QManager-installed binaries under `/usrdata/bin`. It preserves `/etc/qmanager`
 and `/usrdata/opt` so config and Entware payloads are not destroyed casually.
+
+Tailscale is not removed by a default uninstall: if you installed it from the Tailscale page, it keeps running (so the router stays reachable on your tailnet), but there is no QManager page left to manage it. To remove it too, use **Uninstall** in the **Remove Tailscale** card at the bottom of the Tailscale page before uninstalling QManager, or uninstall with `--purge`.
 The online uninstall wrapper verifies the release tarball but extracts only the
 Casa uninstaller script, avoiding a full package expansion during uninstall.
 
