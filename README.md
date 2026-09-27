@@ -98,7 +98,7 @@ Then run these two commands from Windows PowerShell in that folder:
 
 ```powershell
 scp -O .\qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
-ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/install_cfw3212.sh"
+ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/install_cfw3212.sh && sh /tmp/qmanager_install/install_cfw3212.sh"
 ```
 
 The `-O` flag uses legacy SCP mode, which is needed by some Casa SSH setups.
@@ -107,7 +107,7 @@ If you prefer Linux/WSL, use the same two-step flow:
 
 ```sh
 scp -O qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
-ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/install_cfw3212.sh'
+ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/install_cfw3212.sh && sh /tmp/qmanager_install/install_cfw3212.sh'
 ```
 
 After install, open QManager at:
@@ -159,14 +159,14 @@ two commands from Windows PowerShell:
 
 ```powershell
 scp -O .\qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
-ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot"
+ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/uninstall_cfw3212.sh && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot"
 ```
 
 Linux/WSL:
 
 ```sh
 scp -O qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
-ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot'
+ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/uninstall_cfw3212.sh && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot'
 ```
 
 Default uninstall removes QManager services, `/usrdata/qmanager`, and
@@ -180,7 +180,7 @@ Casa uninstaller script, avoiding a full package expansion during uninstall.
 For a deeper cleanup, add `--purge` to the uninstall command:
 
 ```powershell
-ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot --purge"
+ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/uninstall_cfw3212.sh && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot --purge"
 ```
 
 For online purge, SSH into the router and run:
