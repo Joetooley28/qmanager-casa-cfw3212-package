@@ -222,6 +222,26 @@ title label from `(Actions-built, unverified)` to `router-verified by JTooley`
 and changing the body status line to say the package has been live-router
 verified.
 
+## Release Candidate Testing
+
+Builds from any branch other than `main` are always tagged `.dev`, and the
+router's Software Update page refuses `.dev` versions. To test the real update
+path before publishing, a dry-run build is staged in the separate, public, TEST
+ONLY repo `Joetooley28/qmanager-casa-cfw3212-package-rc`: the `...N.dev` assets
+are renamed to `...N`, the `.sha256` is recomputed for the new file name, and
+the tag in the changelog JSON and the install/uninstall script defaults is
+rewritten (no version is stored inside the tarball). A test router is pointed
+at that repo by editing the `PACKAGE_REPO` default in its update CGI and
+`qmanager_update`; the next install restores both files.
+
+When pinning a release build, pass the exact upstream tag (for example
+`upstream_version=v0.1.16`) rather than `latest`, so a new upstream release
+cannot change what gets built.
+
+If `bin.entware.net` is unreachable, the builder falls back to a vendored,
+checksummed set of Entware packages, and router installs use the copies bundled
+in the package, so an Entware outage does not block a release.
+
 ## Stable Releases
 
 The workflow does not expose stable-release publishing. Automation only creates
