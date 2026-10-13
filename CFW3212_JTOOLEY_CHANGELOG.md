@@ -79,7 +79,7 @@
 - The Tailscale page's **Or install from a shell** command is now `/usrdata/bin/qmanager_tailscale_mgr install`, which works in an SSH session on the CFW-3212. It used to show `sudo qmanager_tailscale_mgr install` with an explanation sentence in front, which failed with "sudo: not found", and the copy button copied the sentence too.
 - The Tailscale install log no longer shows a harmless `ln: /usr/bin/tailscale: Read-only file system` error. The `tailscale` command link is created under `/usrdata` only, since `/usr/bin` is read-only on the CFW-3212.
 
-## v0.1.12-cfw3212.22
+## v0.1.12-cfw3212.22 (not released on its own; these changes ship in v0.1.16-cfw3212.1)
 
 - QManager's web server (`qmanager-lighttpd`) now writes errors to a RAM-only log at `/tmp/qmanager-lighttpd-error.log` instead of leaving logging unset. HTTP access logging stays off on Casa so routine UI traffic does not churn flash. The `qmanager-lighttpd` service also sends stdout/stderr to the system journal for same-session diagnostics. These logs are cleared on reboot — they are for troubleshooting while the router is running, not for post-reboot forensics.
 - Tightens the sudo rules for the web UI: instead of allowing any `iptables` / `ip6tables` command, the UI may only run two small helper programs (`qmanager_iptables` and `qmanager_ip6tables`) that apply or read TTL/HL mangle rules on the cellular interface. The port firewall (`qmanager-firewall`) still runs as root via systemd and is unchanged. This closes a broad privilege hole without affecting normal TTL settings or the web UI firewall.

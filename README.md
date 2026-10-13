@@ -15,14 +15,14 @@ for all the hard work building, maintaining, and sharing QManager with the
 community. The upstream project is
 **[dr-dolomite/QManager-RM520N](https://github.com/dr-dolomite/QManager-RM520N)**.
 
-Joetooley built only the Casa CFW-3212 converter/package flow and small UI
-compatibility changes needed to make QManager installable and usable on the
-Casa CFW-3212.
+Joetooley maintains the Casa CFW-3212 port (the converter and package flow,
+and the Casa-specific changes that make QManager work on the CFW-3212) and does
+his best to keep it up to date with new QManager releases.
 
 **Supporting the work:** donations to Rus support QManager itself
 ([GitHub Sponsors](https://github.com/sponsors/dr-dolomite),
 [PayPal](https://paypal.me/iamrusss)). If the Casa port helped you, you can also
-tip Joetooley for the port only:
+tip Joetooley for the port:
 **[PayPal](https://paypal.me/Joetooley28)** ·
 **[Venmo](https://venmo.com/u/Joetooley28)** ·
 **[Cash App](https://cash.app/$jtooley8921)**.
@@ -52,7 +52,7 @@ There are three ways to install or update, easiest first:
 - **Offline, router has no internet** — Method 2 below.
 
 > The commands in this README use `<RELEASE_TAG>` (for example
-> `v0.1.12-cfw3212.13`) and `<VERSION>` (for example `v0.1.12`) as placeholders.
+> `v0.1.16-cfw3212.1`) as a placeholder.
 > Every [GitHub Release](https://github.com/Joetooley28/qmanager-casa-cfw3212-package/releases)
 > page already shows ready-to-paste install/uninstall commands that are
 > auto-generated with that release's exact version. The simplest path is to copy
@@ -97,7 +97,7 @@ router LAN IP is not stock.
 Use this path when the router does not have working internet yet. On your
 Windows computer, download this release asset:
 
-- `qmanager-cfw3212-<VERSION>.tar.gz`
+- `qmanager-cfw3212-<RELEASE_TAG>.tar.gz`
 
 Do not extract the `.tar.gz` on Windows. If Windows already opened/extracted it
 into a folder, go back to the folder that contains the original `.tar.gz` file.
@@ -105,7 +105,7 @@ into a folder, go back to the folder that contains the original `.tar.gz` file.
 Then run these two commands from Windows PowerShell in that folder:
 
 ```powershell
-scp -O .\qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+scp -O .\qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
 ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/install_cfw3212.sh && sh /tmp/qmanager_install/install_cfw3212.sh"
 ```
 
@@ -114,7 +114,7 @@ The `-O` flag uses legacy SCP mode, which is needed by some Casa SSH setups.
 If you prefer Linux/WSL, use the same two-step flow:
 
 ```sh
-scp -O qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+scp -O qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
 ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/install_cfw3212.sh && sh /tmp/qmanager_install/install_cfw3212.sh'
 ```
 
@@ -166,14 +166,14 @@ If the router has no internet, use the same downloaded `.tar.gz` and run these
 two commands from Windows PowerShell:
 
 ```powershell
-scp -O .\qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+scp -O .\qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
 ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/uninstall_cfw3212.sh && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot"
 ```
 
 Linux/WSL:
 
 ```sh
-scp -O qmanager-cfw3212-<VERSION>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
+scp -O qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
 ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/uninstall_cfw3212.sh && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot'
 ```
 
@@ -215,10 +215,10 @@ The online installer checks the package automatically. For offline Windows
 installs, you can verify the downloaded tarball in PowerShell:
 
 ```powershell
-Get-FileHash .\qmanager-cfw3212-<VERSION>.tar.gz -Algorithm SHA256
+Get-FileHash .\qmanager-cfw3212-<RELEASE_TAG>.tar.gz -Algorithm SHA256
 ```
 
-Then compare the output against the `qmanager-cfw3212-<VERSION>.tar.gz.sha256`
+Then compare the output against the `qmanager-cfw3212-<RELEASE_TAG>.sha256`
 checksum asset published next to the package on its release page.
 
 ## Versioning
@@ -226,7 +226,7 @@ checksum asset published next to the package on its release page.
 Release tags follow this pattern:
 
 ```text
-<upstream-qmanager-version>-cfw3212.<casa-build-number>
+v<upstream-qmanager-version>-cfw3212.<casa-build-number>
 ```
 
 Example: upstream QManager `v0.1.9` becomes `v0.1.9-cfw3212.1` for the first

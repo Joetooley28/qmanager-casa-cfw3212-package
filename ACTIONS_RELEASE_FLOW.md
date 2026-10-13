@@ -39,10 +39,11 @@ vX.Y.Z-cfw3212.N.1.dev
 vX.Y.Z-cfw3212.N.2.dev
 ```
 
-If the highest published release is `v0.1.12-cfw3212.20`, the default `dev`
-builds are `v0.1.12-cfw3212.21.1.dev`, `.21.2.dev`, and so on. When the tested
-`dev` work is merged to `main` and published, the public release is
-`v0.1.12-cfw3212.21`.
+If the highest published release is `v0.1.16-cfw3212.1`, the default `dev`
+builds for the same upstream are `v0.1.16-cfw3212.2.1.dev`, `.2.2.dev`, and so
+on. When the tested `dev` work is merged to `main` and published, the public
+release is `v0.1.16-cfw3212.2`. A new upstream version starts again at `.1`
+(for example `v0.1.17-cfw3212.1.1.dev`, published as `v0.1.17-cfw3212.1`).
 
 ## Safe Defaults
 
