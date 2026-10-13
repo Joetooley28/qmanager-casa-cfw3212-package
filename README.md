@@ -19,6 +19,14 @@ Joetooley built only the Casa CFW-3212 converter/package flow and small UI
 compatibility changes needed to make QManager installable and usable on the
 Casa CFW-3212.
 
+**Supporting the work:** donations to Rus support QManager itself
+([GitHub Sponsors](https://github.com/sponsors/dr-dolomite),
+[PayPal](https://paypal.me/iamrusss)). If the Casa port helped you, you can also
+tip Joetooley for the port only:
+**[PayPal](https://paypal.me/Joetooley28)** ·
+**[Venmo](https://venmo.com/u/Joetooley28)** ·
+**[Cash App](https://cash.app/$jtooley8921)**.
+
 Most users should use the prebuilt, ready-to-install package from the latest
 GitHub Release. The release page includes version-specific install commands and
 download assets, so you usually do not need to build anything yourself.
