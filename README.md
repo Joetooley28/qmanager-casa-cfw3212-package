@@ -43,6 +43,11 @@ should continue to use this package repo.
 
 ## Install Or Update
 
+**Free space:** installing or updating needs about **60 MB free on `/usrdata`**
+(check with `df -h /usrdata` over SSH). The package is downloaded and unpacked
+there, not in RAM, and removed when the install finishes. The installer stops
+with a message if there is not enough space.
+
 There are three ways to install or update, easiest first:
 
 - **From the router UI (easiest).** Open QManager and go to **Software Update**,
@@ -105,17 +110,19 @@ into a folder, go back to the folder that contains the original `.tar.gz` file.
 Then run these two commands from Windows PowerShell in that folder:
 
 ```powershell
-scp -O .\qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
-ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/install_cfw3212.sh && sh /tmp/qmanager_install/install_cfw3212.sh"
+scp -O .\qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/usrdata/qmanager.tar.gz
+ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && ln -sf /usrdata/qmanager.tar.gz /tmp/qmanager.tar.gz && tar xzf /usrdata/qmanager.tar.gz -C /tmp qmanager_install/install_cfw3212.sh && sh /tmp/qmanager_install/install_cfw3212.sh; rm -f /usrdata/qmanager.tar.gz /tmp/qmanager.tar.gz"
 ```
 
 The `-O` flag uses legacy SCP mode, which is needed by some Casa SSH setups.
+The package is copied to `/usrdata` (flash), not `/tmp`, because `/tmp` is RAM on
+the CFW-3212 and often has only 20–30 MB free; the command deletes it when done.
 
 If you prefer Linux/WSL, use the same two-step flow:
 
 ```sh
-scp -O qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
-ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/install_cfw3212.sh && sh /tmp/qmanager_install/install_cfw3212.sh'
+scp -O qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/usrdata/qmanager.tar.gz
+ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && ln -sf /usrdata/qmanager.tar.gz /tmp/qmanager.tar.gz && tar xzf /usrdata/qmanager.tar.gz -C /tmp qmanager_install/install_cfw3212.sh && sh /tmp/qmanager_install/install_cfw3212.sh; rm -f /usrdata/qmanager.tar.gz /tmp/qmanager.tar.gz'
 ```
 
 After install, open QManager at:
@@ -166,15 +173,15 @@ If the router has no internet, use the same downloaded `.tar.gz` and run these
 two commands from Windows PowerShell:
 
 ```powershell
-scp -O .\qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
-ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/uninstall_cfw3212.sh && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot"
+scp -O .\qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/usrdata/qmanager.tar.gz
+ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /usrdata/qmanager.tar.gz -C /tmp qmanager_install/uninstall_cfw3212.sh && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot; rm -f /usrdata/qmanager.tar.gz"
 ```
 
 Linux/WSL:
 
 ```sh
-scp -O qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/tmp/qmanager.tar.gz
-ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/uninstall_cfw3212.sh && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot'
+scp -O qmanager-cfw3212-<RELEASE_TAG>.tar.gz root@192.168.1.1:/usrdata/qmanager.tar.gz
+ssh root@192.168.1.1 'rm -rf /tmp/qmanager_install && tar xzf /usrdata/qmanager.tar.gz -C /tmp qmanager_install/uninstall_cfw3212.sh && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot; rm -f /usrdata/qmanager.tar.gz'
 ```
 
 Default uninstall removes QManager services, `/usrdata/qmanager`, and
@@ -188,7 +195,7 @@ Casa uninstaller script, avoiding a full package expansion during uninstall.
 For a deeper cleanup, add `--purge` to the uninstall command:
 
 ```powershell
-ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /tmp/qmanager.tar.gz -C /tmp qmanager_install/uninstall_cfw3212.sh && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot --purge"
+ssh root@192.168.1.1 "rm -rf /tmp/qmanager_install && tar xzf /usrdata/qmanager.tar.gz -C /tmp qmanager_install/uninstall_cfw3212.sh && sh /tmp/qmanager_install/uninstall_cfw3212.sh --force --no-reboot --purge; rm -f /usrdata/qmanager.tar.gz"
 ```
 
 For online purge, SSH into the router and run:

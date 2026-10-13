@@ -148,8 +148,10 @@ the exact Casa release tag being built, for example `v0.1.10-cfw3212.22`. Before
 running a new package build, add or update the short Joetooley section for that
 tag in the builder repo changelog source.
 
-The generated one-line install script downloads the package tarball directly to
-`/tmp/qmanager.tar.gz`, verifies that file against the release checksum, extracts
+The generated one-line install script downloads the package tarball to
+`/usrdata/qmanager_stage/online-install/` (flash, not `/tmp`, which is RAM on the
+CFW-3212), links it as `/tmp/qmanager.tar.gz`, verifies it against the release
+checksum, extracts
 only `qmanager_install/install_cfw3212.sh`, and lets the Casa installer perform
 the single full package extraction. This avoids a second full tarball extract on
 the router during online installs.
